@@ -1,0 +1,317 @@
+{
+  "dataset_name": "SANJEEVANI_Pre_Disaster_Resource_Positioning_Plan",
+  "is_synthetic": true,
+  "algorithm": "Heuristic Multi-Criteria Demand-Capacity Positioning (Non-Optimal Decision Support)",
+  "scientific_disclaimer": "Prototype resource recommendations based on synthetic topological and flood data. Greedy heuristic does not claim mathematical optimality or replace official emergency authority protocols.",
+  "total_resources_allocated": 15,
+  "inventory_requested": {
+    "ambulances": 4,
+    "boats": 3,
+    "rescue_teams": 4,
+    "emergency_supplies": 4
+  },
+  "recommendations": [
+    {
+      "resource_type": "ambulances",
+      "recommended_node_id": "E1",
+      "recommended_location_name": "Central Fire & EMS Hub",
+      "reason": "Strategic ambulance staging at Central Fire & EMS Hub (emergency_station). Provides rapid 8-minute emergency medical coverage to 50,000 residents.",
+      "relevant_population": 50000,
+      "relevant_critical_roads": [
+        "RD08",
+        "RD09"
+      ],
+      "accessibility_information": "Directly connected to transit network via 2 access roads.",
+      "confidence_or_suitability_score": 0.91,
+      "assumptions": "Assumes standard emergency dispatch readiness and functional arterial roads."
+    },
+    {
+      "resource_type": "ambulances",
+      "recommended_node_id": "H2",
+      "recommended_location_name": "Apex Trauma Center",
+      "reason": "Strategic ambulance staging at Apex Trauma Center (hospital). Provides rapid 8-minute emergency medical coverage to 30,500 residents.",
+      "relevant_population": 30500,
+      "relevant_critical_roads": [
+        "RD13",
+        "RD20"
+      ],
+      "accessibility_information": "Directly connected to transit network via 2 access roads.",
+      "confidence_or_suitability_score": 0.724,
+      "assumptions": "Assumes standard emergency dispatch readiness and functional arterial roads."
+    },
+    {
+      "resource_type": "ambulances",
+      "recommended_node_id": "H1",
+      "recommended_location_name": "City General Hospital",
+      "reason": "Strategic ambulance staging at City General Hospital (hospital). Provides rapid 8-minute emergency medical coverage to 28,000 residents.",
+      "relevant_population": 28000,
+      "relevant_critical_roads": [
+        "RD06",
+        "RD10",
+        "RD17"
+      ],
+      "accessibility_information": "Directly connected to transit network via 3 access roads.",
+      "confidence_or_suitability_score": 0.704,
+      "assumptions": "Assumes standard emergency dispatch readiness and functional arterial roads."
+    },
+    {
+      "resource_type": "ambulances",
+      "recommended_node_id": "R2",
+      "recommended_location_name": "Downtown Heights",
+      "reason": "Strategic ambulance staging at Downtown Heights (residential). Provides rapid 8-minute emergency medical coverage to 28,000 residents.",
+      "relevant_population": 28000,
+      "relevant_critical_roads": [
+        "RD09",
+        "RD10"
+      ],
+      "accessibility_information": "Directly connected to transit network via 2 access roads.",
+      "confidence_or_suitability_score": 0.674,
+      "assumptions": "Assumes standard emergency dispatch readiness and functional arterial roads."
+    },
+    {
+      "resource_type": "boats",
+      "recommended_node_id": "E2",
+      "recommended_location_name": "Westside Rescue Depot",
+      "reason": "Primary western riverfront rescue depot; equipped with vehicle fleet and watercraft staging berths.",
+      "relevant_population": 15000,
+      "relevant_critical_roads": [
+        "RD02",
+        "RD03"
+      ],
+      "accessibility_information": "Waterfront embarkation point requiring boat launch access.",
+      "confidence_or_suitability_score": 0.92,
+      "assumptions": "Assumption: Synthetic riverbank/lakeshore accessibility. Prototype assumes local shore, dock, or ramp readiness for inflatable flood rescue boats."
+    },
+    {
+      "resource_type": "boats",
+      "recommended_node_id": "R1",
+      "recommended_location_name": "Riverside Colony",
+      "reason": "High-density riverside community (14,000 residents) at severe risk of flood inundation and road cut-off.",
+      "relevant_population": 14000,
+      "relevant_critical_roads": [
+        "RD01",
+        "RD02"
+      ],
+      "accessibility_information": "Waterfront embarkation point requiring boat launch access.",
+      "confidence_or_suitability_score": 0.88,
+      "assumptions": "Assumption: Synthetic riverbank/lakeshore accessibility. Prototype assumes local shore, dock, or ramp readiness for inflatable flood rescue boats."
+    },
+    {
+      "resource_type": "boats",
+      "recommended_node_id": "R6",
+      "recommended_location_name": "Lakeside Enclave",
+      "reason": "Lakeside residential enclave (8,000 residents) vulnerable to causeway flooding and water isolation.",
+      "relevant_population": 8000,
+      "relevant_critical_roads": [
+        "RD18",
+        "RD19"
+      ],
+      "accessibility_information": "Waterfront embarkation point requiring boat launch access.",
+      "confidence_or_suitability_score": 0.82,
+      "assumptions": "Assumption: Synthetic riverbank/lakeshore accessibility. Prototype assumes local shore, dock, or ramp readiness for inflatable flood rescue boats."
+    },
+    {
+      "resource_type": "rescue_teams",
+      "recommended_node_id": "E1",
+      "recommended_location_name": "Central Fire & EMS Hub",
+      "reason": "Central Fire & EMS Hub; optimal multi-quadrant dispatch to downtown and major river crossing.",
+      "relevant_population": 25000,
+      "relevant_critical_roads": [
+        "RD08",
+        "RD09"
+      ],
+      "accessibility_information": "Connected to city network with 2 ingress/egress routes.",
+      "confidence_or_suitability_score": 0.95,
+      "assumptions": "Assumes station/shelter structural integrity during initial storm impact."
+    },
+    {
+      "resource_type": "rescue_teams",
+      "recommended_node_id": "E2",
+      "recommended_location_name": "Westside Rescue Depot",
+      "reason": "Westside Rescue Depot; rapid response coverage for riverside wards and western bypass highway.",
+      "relevant_population": 25000,
+      "relevant_critical_roads": [
+        "RD02",
+        "RD03"
+      ],
+      "accessibility_information": "Connected to city network with 2 ingress/egress routes.",
+      "confidence_or_suitability_score": 0.9,
+      "assumptions": "Assumes station/shelter structural integrity during initial storm impact."
+    },
+    {
+      "resource_type": "rescue_teams",
+      "recommended_node_id": "S1",
+      "recommended_location_name": "North Community Stadium Shelter",
+      "reason": "North Community Stadium Shelter; primary northern evacuation center with high staging capacity (3,500 evacuees).",
+      "relevant_population": 25000,
+      "relevant_critical_roads": [
+        "RD05",
+        "RD06"
+      ],
+      "accessibility_information": "Connected to city network with 2 ingress/egress routes.",
+      "confidence_or_suitability_score": 0.85,
+      "assumptions": "Assumes station/shelter structural integrity during initial storm impact."
+    },
+    {
+      "resource_type": "rescue_teams",
+      "recommended_node_id": "S2",
+      "recommended_location_name": "East High School Civic Camp",
+      "reason": "East High School Civic Camp; forward eastern sector staging center supporting East End and Old Town.",
+      "relevant_population": 25000,
+      "relevant_critical_roads": [
+        "RD16",
+        "RD17"
+      ],
+      "accessibility_information": "Connected to city network with 2 ingress/egress routes.",
+      "confidence_or_suitability_score": 0.82,
+      "assumptions": "Assumes station/shelter structural integrity during initial storm impact."
+    },
+    {
+      "resource_type": "emergency_supplies",
+      "recommended_node_id": "R3",
+      "recommended_location_name": "Hilltop Suburb",
+      "reason": "CRITICAL PRE-STOCKPILING: Hilltop Suburb relies on single access road RD04 (cut-edge). If RD04 fails, external trucks cannot enter. Emergency food/water must be pre-positioned inside R3.",
+      "relevant_population": 9500,
+      "relevant_critical_roads": [
+        "RD04"
+      ],
+      "accessibility_information": "Pre-disaster road delivery required prior to severe weather onset.",
+      "confidence_or_suitability_score": 0.96,
+      "assumptions": "Assumes secure, elevated, dry storage facilities exist on-site."
+    },
+    {
+      "resource_type": "emergency_supplies",
+      "recommended_node_id": "S1",
+      "recommended_location_name": "North Community Stadium Shelter",
+      "reason": "Primary evacuation stadium shelter; pre-positioning food, potable water, and triage kits for 3,500 evacuees.",
+      "relevant_population": 3500,
+      "relevant_critical_roads": [
+        "RD05",
+        "RD06"
+      ],
+      "accessibility_information": "Pre-disaster road delivery required prior to severe weather onset.",
+      "confidence_or_suitability_score": 0.92,
+      "assumptions": "Assumes secure, elevated, dry storage facilities exist on-site."
+    },
+    {
+      "resource_type": "emergency_supplies",
+      "recommended_node_id": "S2",
+      "recommended_location_name": "East High School Civic Camp",
+      "reason": "East sector civic shelter; pre-stockpiling emergency relief for 2,000 anticipated evacuees.",
+      "relevant_population": 2000,
+      "relevant_critical_roads": [
+        "RD16",
+        "RD17"
+      ],
+      "accessibility_information": "Pre-disaster road delivery required prior to severe weather onset.",
+      "confidence_or_suitability_score": 0.88,
+      "assumptions": "Assumes secure, elevated, dry storage facilities exist on-site."
+    },
+    {
+      "resource_type": "emergency_supplies",
+      "recommended_node_id": "R1",
+      "recommended_location_name": "Riverside Colony",
+      "reason": "Riverside Colony (pop: 14,000); waterfront community prone to access road flooding; pre-positioning water purification & MREs.",
+      "relevant_population": 14000,
+      "relevant_critical_roads": [
+        "RD01",
+        "RD02"
+      ],
+      "accessibility_information": "Pre-disaster road delivery required prior to severe weather onset.",
+      "confidence_or_suitability_score": 0.84,
+      "assumptions": "Assumes secure, elevated, dry storage facilities exist on-site."
+    }
+  ],
+  "summary_by_node": {
+    "E1": {
+      "node_id": "E1",
+      "location_name": "Central Fire & EMS Hub",
+      "ambulances": 1,
+      "boats": 0,
+      "rescue_teams": 1,
+      "emergency_supplies": 0,
+      "total_staged_assets": 2
+    },
+    "H2": {
+      "node_id": "H2",
+      "location_name": "Apex Trauma Center",
+      "ambulances": 1,
+      "boats": 0,
+      "rescue_teams": 0,
+      "emergency_supplies": 0,
+      "total_staged_assets": 1
+    },
+    "H1": {
+      "node_id": "H1",
+      "location_name": "City General Hospital",
+      "ambulances": 1,
+      "boats": 0,
+      "rescue_teams": 0,
+      "emergency_supplies": 0,
+      "total_staged_assets": 1
+    },
+    "R2": {
+      "node_id": "R2",
+      "location_name": "Downtown Heights",
+      "ambulances": 1,
+      "boats": 0,
+      "rescue_teams": 0,
+      "emergency_supplies": 0,
+      "total_staged_assets": 1
+    },
+    "E2": {
+      "node_id": "E2",
+      "location_name": "Westside Rescue Depot",
+      "ambulances": 0,
+      "boats": 1,
+      "rescue_teams": 1,
+      "emergency_supplies": 0,
+      "total_staged_assets": 2
+    },
+    "R1": {
+      "node_id": "R1",
+      "location_name": "Riverside Colony",
+      "ambulances": 0,
+      "boats": 1,
+      "rescue_teams": 0,
+      "emergency_supplies": 1,
+      "total_staged_assets": 2
+    },
+    "R6": {
+      "node_id": "R6",
+      "location_name": "Lakeside Enclave",
+      "ambulances": 0,
+      "boats": 1,
+      "rescue_teams": 0,
+      "emergency_supplies": 0,
+      "total_staged_assets": 1
+    },
+    "S1": {
+      "node_id": "S1",
+      "location_name": "North Community Stadium Shelter",
+      "ambulances": 0,
+      "boats": 0,
+      "rescue_teams": 1,
+      "emergency_supplies": 1,
+      "total_staged_assets": 2
+    },
+    "S2": {
+      "node_id": "S2",
+      "location_name": "East High School Civic Camp",
+      "ambulances": 0,
+      "boats": 0,
+      "rescue_teams": 1,
+      "emergency_supplies": 1,
+      "total_staged_assets": 2
+    },
+    "R3": {
+      "node_id": "R3",
+      "location_name": "Hilltop Suburb",
+      "ambulances": 0,
+      "boats": 0,
+      "rescue_teams": 0,
+      "emergency_supplies": 1,
+      "total_staged_assets": 1
+    }
+  }
+}

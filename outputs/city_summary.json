@@ -1,0 +1,15 @@
+{
+  "is_synthetic": true,
+  "total_nodes": 16,
+  "total_edges": 20,
+  "residential_zones_count": 6,
+  "total_population": 90000,
+  "hospitals_count": 2,
+  "total_hospital_beds": 700,
+  "shelters_count": 2,
+  "total_shelter_capacity": 5500,
+  "emergency_stations_count": 2,
+  "junctions_count": 4,
+  "bridges_count": 3,
+  "is_fully_connected_initially": true
+}
