@@ -18,7 +18,6 @@ import pandas as pd
 from sanjeevani.data import (
     SECTOR_TO_JUNCTION,
     SYNTHETIC_JUNCTIONS,
-    get_synthetic_hospitals,
     get_synthetic_rescue_teams,
     get_synthetic_roads,
 )
@@ -161,11 +160,26 @@ def _compute_path_metrics(
     }
 
 
+ALLOCATION_COLUMNS = [
+    "Incident ID",
+    "Urgency",
+    "Sector (Node)",
+    "Assigned Unit",
+    "Dispatch Route (Unit → Incident)",
+    "Evacuation Hospital",
+    "Hospital Route (Incident → Hospital)",
+    "Total Distance (km)",
+    "Est. Response ETA (min)",
+    "Route Status",
+]
+
+
 def allocate_rescue_resources(
     scenario_name: str,
     incidents_df: pd.DataFrame,
     strategy_name: str,
     manual_failed_roads: set[str] | None = None,
+    units_df_override: pd.DataFrame | None = None,
 ) -> dict:
     """
     Allocate available rescue units to active incidents and compute full two-leg routes:
@@ -179,13 +193,36 @@ def allocate_rescue_resources(
     )
     weight_attr = strategy_cfg["weight_attr"]
 
-    units_df = get_synthetic_rescue_teams().copy()
-    hospitals_df = get_synthetic_hospitals().copy()
-
-    # Map each rescue unit to its home junction node
-    units_df["junction"] = units_df["assigned_sector"].map(
-        lambda s: SECTOR_TO_JUNCTION.get(s, "J2")
+    units_df = (
+        units_df_override.copy()
+        if units_df_override is not None
+        else get_synthetic_rescue_teams().copy()
     )
+
+    if not units_df.empty and "assigned_sector" in units_df.columns:
+        # Map each rescue unit to its home junction node
+        units_df["junction"] = units_df["assigned_sector"].map(
+            lambda s: SECTOR_TO_JUNCTION.get(s, "J2")
+        )
+        available_units = units_df.to_dict("records")
+    else:
+        available_units = []
+
+    if incidents_df is None or incidents_df.empty:
+        return {
+            "strategy_name": strategy_name,
+            "strategy_meta": strategy_cfg,
+            "allocations_df": pd.DataFrame(columns=ALLOCATION_COLUMNS),
+            "map_routes": [],
+            "assigned_count": 0,
+            "unreachable_count": 0,
+            "avg_response_eta_min": 0.0,
+            "avg_total_distance_km": 0.0,
+            "warning_corridor_exposures": 0,
+            "unit_utilization_pct": 0.0,
+            "passable_edges_count": G.number_of_edges(),
+            "total_edges_count": len(roads),
+        }
 
     # Sort incidents according to strategy priority
     inc_df = incidents_df.copy()
@@ -205,7 +242,6 @@ def allocate_rescue_resources(
         j_id for j_id, attrs in SYNTHETIC_JUNCTIONS.items() if attrs["hospital_id"] is not None
     ]
 
-    available_units = units_df.to_dict("records")
     used_unit_ids: set[str] = set()
 
     allocations = []

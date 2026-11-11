@@ -72,13 +72,15 @@ def simulate_horizon_state(
     rainfall_mm_hr: float,
     horizon_min: int,
     manual_failed_roads: set[str] | None = None,
+    base_roads: list[dict] | None = None,
 ) -> dict:
     """
     Simulate the synthetic city road network and NetworkX connectivity at a specific
     future horizon (0, 15, 30, or 60 minutes) under a given rainfall intensity.
     """
-    manual_failed = manual_failed_roads or set()
-    base_roads = get_synthetic_roads(scenario_name, manual_failed_roads=manual_failed)
+    manual_failed = set(manual_failed_roads) if manual_failed_roads else set()
+    if base_roads is None:
+        base_roads = get_synthetic_roads(scenario_name, manual_failed_roads=manual_failed)
 
     projected_roads = []
     for r in base_roads:
@@ -205,15 +207,56 @@ def simulate_all_horizons(
     manual_failed_roads: set[str] | None = None,
 ) -> dict[int, dict]:
     """Run synthetic projections across all four horizons: T+0, T+15, T+30, and T+60."""
+    manual_failed = set(manual_failed_roads) if manual_failed_roads else set()
+    base_roads = get_synthetic_roads(scenario_name, manual_failed_roads=manual_failed)
     results = {}
     for h in HORIZONS_MINUTES:
         results[h] = simulate_horizon_state(
             scenario_name=scenario_name,
             rainfall_mm_hr=rainfall_mm_hr,
             horizon_min=h,
-            manual_failed_roads=manual_failed_roads,
+            manual_failed_roads=manual_failed,
+            base_roads=base_roads,
         )
     return results
+
+
+def compute_rainfall_sensitivity_curve(
+    scenario_name: str,
+    manual_failed_roads: set[str] | tuple[str, ...] | None = None,
+    rain_samples: list[int | float] | None = None,
+) -> dict:
+    """
+    Compute the 7-step rainfall sensitivity curve at T+60 min directly without
+    redundantly computing T+0, T+15, and T+30 for each sample point.
+    Reduces NetworkX graph evaluations from 28 to 7 and road fetches from 28 to 1.
+    """
+    samples = rain_samples if rain_samples is not None else [0, 25, 50, 75, 100, 125, 150]
+    manual_failed = set(manual_failed_roads) if manual_failed_roads else set()
+    base_roads = get_synthetic_roads(scenario_name, manual_failed_roads=manual_failed)
+
+    access_curve = []
+    blocked_pct_curve = []
+
+    for r_val in samples:
+        h60 = simulate_horizon_state(
+            scenario_name=scenario_name,
+            rainfall_mm_hr=float(r_val),
+            horizon_min=60,
+            manual_failed_roads=manual_failed,
+            base_roads=base_roads,
+        )
+        access_curve.append(h60["hospital_access_pct"])
+        total_r = max(
+            h60["safe_count"] + h60["warning_count"] + h60["blocked_count"], 1
+        )
+        blocked_pct_curve.append(round((h60["blocked_count"] / total_r) * 100.0, 1))
+
+    return {
+        "rain_samples": list(samples),
+        "access_curve": access_curve,
+        "blocked_pct_curve": blocked_pct_curve,
+    }
 
 
 def build_horizon_comparison_df(all_horizons: dict[int, dict]) -> pd.DataFrame:

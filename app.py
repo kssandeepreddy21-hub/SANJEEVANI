@@ -5,7 +5,7 @@ SANJEEVANI — Emergency Operations Centre (EOC) Main Dashboard
 Member 4: Dashboard UI, Interactive GIS Mapping, and System Integration.
 """
 
-from datetime import datetime
+import html
 import textwrap
 import streamlit as st
 import pandas as pd
@@ -24,9 +24,17 @@ from sanjeevani.data import (
     get_synthetic_incidents,
     get_critical_alerts,
     get_recent_activity,
-    build_city_road_graph,
-    evaluate_network_resilience,
     get_precautions_by_disaster_type,
+)
+from sanjeevani.resilience import (
+    assess_road_network_resilience,
+    simulate_single_road_failure,
+)
+from sanjeevani.evidence import (
+    SECTOR_COORDINATES,
+    score_emergency_report,
+    filter_incident_reports,
+    summarize_evidence_metrics,
 )
 from sanjeevani.audit import (
     create_initial_audit_log,
@@ -39,6 +47,7 @@ from sanjeevani.twin import (
     HORIZONS_MINUTES,
     HORIZON_LABELS,
     simulate_all_horizons,
+    compute_rainfall_sensitivity_curve,
     build_horizon_comparison_df,
     build_road_progression_df,
     get_cascading_impacts_and_observations,
@@ -486,6 +495,8 @@ def build_eoc_city_map(
     incidents = get_active_incidents_df(scenario_name)
     for _, inc in incidents.iterrows():
         inc_color = "#EF4444" if inc["urgency"] == "CRITICAL" else "#F97316"
+        safe_title = html.escape(str(inc["title"]))
+        safe_type = html.escape(str(inc["type"]))
         folium.CircleMarker(
             location=[inc["lat"], inc["lon"]],
             radius=10 if inc["urgency"] == "CRITICAL" else 8,
@@ -493,11 +504,11 @@ def build_eoc_city_map(
             fill=True,
             fill_color=inc_color,
             fill_opacity=0.95,
-            tooltip=f"⚠️ {inc['incident_id']} [{inc['urgency']}]: {inc['title']}",
+            tooltip=f"⚠️ {inc['incident_id']} [{inc['urgency']}]: {safe_title}",
             popup=folium.Popup(
-                f"<b>{inc['incident_id']}: {inc['title']}</b><br>"
+                f"<b>{inc['incident_id']}: {safe_title}</b><br>"
                 f"Urgency: <b style='color:{inc_color};'>{inc['urgency']}</b><br>"
-                f"Type: {inc['type']}<br>"
+                f"Type: {safe_type}<br>"
                 f"Evidence Confidence: {int(inc['confidence']*100)}%<br>"
                 f"Duplicate Check: {inc.get('duplicate_warning', 'Clear')}<br>"
                 f"Verified: {'Yes' if inc['verified'] else 'Pending Check'}<br>"
@@ -509,11 +520,18 @@ def build_eoc_city_map(
     return m
 
 
-def build_road_risk_chart(scenario_name: str) -> go.Figure:
+def build_road_risk_chart(
+    scenario_name: str,
+    roads_override: list[dict] | None = None,
+) -> go.Figure:
     """Build a compact Plotly bar chart showing synthetic road failure probability."""
-    roads = get_synthetic_roads(
-        scenario_name,
-        manual_failed_roads=st.session_state.manual_failed_roads,
+    roads = (
+        roads_override
+        if roads_override is not None
+        else get_synthetic_roads(
+            scenario_name,
+            manual_failed_roads=st.session_state.manual_failed_roads,
+        )
     )
     df_roads = pd.DataFrame(roads)
 
@@ -641,27 +659,31 @@ def build_horizon_projection_chart(all_horizons: dict[int, dict]) -> go.Figure:
     return fig
 
 
+@st.cache_data(show_spinner=False)
+def _get_cached_rainfall_sensitivity(
+    scenario_name: str,
+    manual_failed_tuple: tuple[str, ...],
+) -> dict:
+    """Cached wrapper for the 7-step T+60 rainfall sensitivity curve."""
+    return compute_rainfall_sensitivity_curve(
+        scenario_name=scenario_name,
+        manual_failed_roads=set(manual_failed_tuple),
+    )
+
+
 def build_rainfall_sensitivity_chart(
     scenario_name: str,
     current_rain: float,
     manual_failed_roads: set[str],
 ) -> go.Figure:
     """Build a rainfall intensity curve showing how T+60 blocked roads & hospital access vary from 0 to 150 mm/hr."""
-    rain_samples = [0, 25, 50, 75, 100, 125, 150]
-    access_curve = []
-    blocked_pct_curve = []
-
-    for r_val in rain_samples:
-        h60 = simulate_all_horizons(
-            scenario_name,
-            rainfall_mm_hr=float(r_val),
-            manual_failed_roads=manual_failed_roads,
-        )[60]
-        access_curve.append(h60["hospital_access_pct"])
-        total_r = max(
-            h60["safe_count"] + h60["warning_count"] + h60["blocked_count"], 1
-        )
-        blocked_pct_curve.append(round((h60["blocked_count"] / total_r) * 100.0, 1))
+    curve = _get_cached_rainfall_sensitivity(
+        scenario_name=scenario_name,
+        manual_failed_tuple=tuple(sorted(manual_failed_roads)),
+    )
+    rain_samples = curve["rain_samples"]
+    access_curve = curve["access_curve"]
+    blocked_pct_curve = curve["blocked_pct_curve"]
 
     fig = go.Figure()
     fig.add_trace(
@@ -987,9 +1009,11 @@ with st.sidebar:
         extra_incidents_count=extra_inc_count,
         extra_critical_count=extra_crit_count,
     )
-    total_roads_count = len(
-        get_synthetic_roads(selected_scenario, manual_failed_roads=st.session_state.manual_failed_roads)
+    active_roads = get_synthetic_roads(
+        selected_scenario,
+        manual_failed_roads=st.session_state.manual_failed_roads,
     )
+    total_roads_count = len(active_roads)
 
     st.markdown(
         f"""
@@ -1139,7 +1163,10 @@ if selected_section == "1. Overview":
             unsafe_allow_html=True,
         )
 
-        city_map = build_eoc_city_map(selected_scenario)
+        city_map = build_eoc_city_map(
+            selected_scenario,
+            roads_override=active_roads,
+        )
         st_folium(
             city_map,
             use_container_width=True,
@@ -1175,7 +1202,10 @@ if selected_section == "1. Overview":
 
         st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
         # Compact Plotly chart below alerts
-        risk_fig = build_road_risk_chart(selected_scenario)
+        risk_fig = build_road_risk_chart(
+            selected_scenario,
+            roads_override=active_roads,
+        )
         st.plotly_chart(risk_fig, width="stretch")
 
     st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
@@ -1188,9 +1218,12 @@ if selected_section == "1. Overview":
             '<div class="section-header">📋 RECENT SYSTEM ACTIVITY (LIVE SESSION AUDIT STREAM)</div>',
             unsafe_allow_html=True,
         )
-        df_activity = get_audit_dataframe(st.session_state.audit_log)[
-            ["Timestamp", "Stage", "Action", "Details"]
-        ].head(8)
+        if st.session_state.audit_log:
+            df_activity = get_audit_dataframe(st.session_state.audit_log)[
+                ["Timestamp", "Stage", "Action", "Details"]
+            ].head(8)
+        else:
+            df_activity = get_recent_activity()
         st.dataframe(df_activity, width="stretch", hide_index=True)
 
     with unit_col:
@@ -1207,20 +1240,15 @@ elif selected_section == "2. Resilience Lab":
     # -----------------------------------------------------------------------
     # SECTION 2: RESILIENCE LAB (Member 1 Interface & NetworkX Simulation)
     # -----------------------------------------------------------------------
-    roads_list = get_synthetic_roads(
+    res_bundle = assess_road_network_resilience(
         selected_scenario,
         manual_failed_roads=st.session_state.manual_failed_roads,
+        roads_override=active_roads,
     )
-    df_roads = pd.DataFrame(roads_list)
-    resilience_eval = evaluate_network_resilience(
-        selected_scenario,
-        manual_failed_roads=st.session_state.manual_failed_roads,
-    )
-    G_passable = build_city_road_graph(
-        selected_scenario,
-        manual_failed_roads=st.session_state.manual_failed_roads,
-        include_blocked=False,
-    )
+    roads_list = res_bundle["roads_list"]
+    df_roads = res_bundle["roads_df"]
+    resilience_eval = res_bundle["resilience_eval"]
+    G_passable = res_bundle["passable_graph"]
 
     # Top Summary Metrics for Resilience Lab
     res_kpi_html = textwrap.dedent(
@@ -1297,10 +1325,10 @@ elif selected_section == "2. Resilience Lab":
         )
 
         # Preview connectivity impact if this specific road is forced to fail
-        hypothetical_failed = set(st.session_state.manual_failed_roads) | {selected_road_id}
-        hypothetical_eval = evaluate_network_resilience(
+        hypothetical_sim = simulate_single_road_failure(
             selected_scenario,
-            manual_failed_roads=hypothetical_failed,
+            road_id=selected_road_id,
+            existing_failed_roads=st.session_state.manual_failed_roads,
         )
 
         st.markdown(
@@ -1317,7 +1345,7 @@ elif selected_section == "2. Resilience Lab":
                 • <b>Vulnerability Score:</b> {selected_road_obj['vulnerability_score']} / 100 (Criticality Rank #{selected_road_obj['critical_rank']})<br/>
                 • <b>Direct Population Impact:</b> {selected_road_obj['population_impact']:,} residents<br/>
                 • <b>Pre-Positioning Recommendation:</b> {selected_road_obj['preposition_Zone']}<br/>
-                • <b>Projected Hospital Access if Closed:</b> {hypothetical_eval['hospital_access_pct']}% (Isolated Pop: {hypothetical_eval['isolated_population']:,})
+                • <b>Projected Hospital Access if Closed:</b> {hypothetical_sim['post_failure_access_pct']}% (Isolated Pop: {hypothetical_sim['isolated_population']:,})
                 </div>
                 </div>
                 """
@@ -1329,7 +1357,7 @@ elif selected_section == "2. Resilience Lab":
         with btn_c1:
             if st.button(
                 f"💥 Simulate Failure ({selected_road_id})",
-                use_container_width=True,
+                width="stretch",
             ):
                 if selected_road_id not in st.session_state.manual_failed_roads:
                     st.session_state.manual_failed_roads.add(selected_road_id)
@@ -1347,7 +1375,7 @@ elif selected_section == "2. Resilience Lab":
                     st.warning(f"{selected_road_id} is already marked as BLOCKED in this session.")
 
         with btn_c2:
-            if st.button("🔄 Reset Simulated Road Failures", use_container_width=True):
+            if st.button("🔄 Reset Simulated Road Failures", width="stretch"):
                 if st.session_state.manual_failed_roads:
                     count_reset = len(st.session_state.manual_failed_roads)
                     st.session_state.manual_failed_roads.clear()
@@ -1376,6 +1404,7 @@ elif selected_section == "2. Resilience Lab":
         res_map = build_eoc_city_map(
             selected_scenario,
             highlight_road_id=selected_road_id,
+            roads_override=roads_list,
         )
         st_folium(res_map, use_container_width=True, height=510, returned_objects=[])
 
@@ -1395,45 +1424,20 @@ elif selected_section == "2. Resilience Lab":
             '<div class="section-header">📊 CRITICAL ROAD RANKINGS & RESOURCE PRE-POSITIONING</div>',
             unsafe_allow_html=True,
         )
-        df_ranking = df_roads.sort_values("critical_rank")[
-            [
-                "critical_rank",
-                "road_id",
-                "name",
-                "status",
-                "vulnerability_score",
-                "failure_prob",
-                "population_impact",
-                "preposition_Zone",
-            ]
-        ].rename(
-            columns={
-                "critical_rank": "Rank",
-                "road_id": "Road ID",
-                "name": "Corridor Name",
-                "status": "Status",
-                "vulnerability_score": "Vuln Score",
-                "failure_prob": "Failure Prob",
-                "population_impact": "Pop. Impact",
-                "preposition_Zone": "Recommended Pre-Positioning",
-            }
-        )
-        st.dataframe(df_ranking, width="stretch", hide_index=True)
+        st.dataframe(res_bundle["critical_rankings_df"], width="stretch", hide_index=True)
 
 elif selected_section == "3. Live Response":
     # -----------------------------------------------------------------------
     # SECTION 3: LIVE RESPONSE (Member 2 Interface: Reports & Evidence Scoring)
     # -----------------------------------------------------------------------
     df_inc_all = get_active_incidents_df(selected_scenario)
-    roads_now = get_synthetic_roads(
-        selected_scenario,
-        manual_failed_roads=st.session_state.manual_failed_roads,
-    )
+    roads_now = active_roads
 
-    crit_count = int((df_inc_all["urgency"] == "CRITICAL").sum())
-    verified_count = int(df_inc_all["verified"].sum())
-    dup_count = int(df_inc_all["duplicate_warning"].str.contains("FLAGGED").sum())
-    avg_conf = round(float(df_inc_all["confidence"].mean()) * 100, 1)
+    ev_metrics = summarize_evidence_metrics(df_inc_all)
+    crit_count = ev_metrics["critical_count"]
+    verified_count = ev_metrics["verified_count"]
+    dup_count = ev_metrics["duplicate_flagged_count"]
+    avg_conf = ev_metrics["mean_confidence_pct"]
     open_roads_count = sum(1 for r in roads_now if r["status"] != "BLOCKED")
 
     live_kpi_html = textwrap.dedent(
@@ -1509,13 +1513,11 @@ elif selected_section == "3. Live Response":
                 index=0,
             )
 
-        df_filtered = df_inc_all.copy()
-        if urgency_filter != "ALL":
-            df_filtered = df_filtered[df_filtered["urgency"] == urgency_filter]
-        if verify_filter == "Verified Only":
-            df_filtered = df_filtered[df_filtered["verified"] == True]  # noqa: E712
-        elif verify_filter == "Pending / Unverified Only":
-            df_filtered = df_filtered[df_filtered["verified"] == False]  # noqa: E712
+        df_filtered = filter_incident_reports(
+            df_inc_all,
+            urgency_filter=urgency_filter,
+            verify_filter=verify_filter,
+        )
 
         df_display = df_filtered[
             [
@@ -1560,7 +1562,7 @@ elif selected_section == "3. Live Response":
                 )
             with v_c2:
                 st.markdown("<div style='height:28px;'></div>", unsafe_allow_html=True)
-                if st.button("✅ Mark Selected Report Verified", use_container_width=True):
+                if st.button("✅ Mark Selected Report Verified", width="stretch"):
                     st.session_state.verified_overrides[inc_to_verify] = True
                     append_audit_event(
                         st.session_state.audit_log,
@@ -1575,14 +1577,6 @@ elif selected_section == "3. Live Response":
             '<div class="section-header">➕ SUBMIT SAMPLE EMERGENCY REPORT (SIMULATED INTAKE)</div>',
             unsafe_allow_html=True,
         )
-        sector_coords = {
-            "Sector 4 Lowlands": (12.9655, 77.5920),
-            "Central Riverfront": (12.9740, 77.5975),
-            "North District": (12.9865, 77.5865),
-            "South Valley": (12.9575, 77.6020),
-            "East Basin": (12.9695, 77.6095),
-            "West Connector": (12.9705, 77.5860),
-        }
 
         with st.form("submit_emergency_report_form", clear_on_submit=True):
             rep_title = st.text_input(
@@ -1591,7 +1585,7 @@ elif selected_section == "3. Live Response":
             )
             rep_sector = st.selectbox(
                 "Incident Location / Sector",
-                options=list(sector_coords.keys()),
+                options=list(SECTOR_COORDINATES.keys()),
             )
             rep_type = st.selectbox(
                 "Disaster Type",
@@ -1612,41 +1606,25 @@ elif selected_section == "3. Live Response":
             )
             submitted = st.form_submit_button(
                 "🚨 Ingest Emergency Report & Score Evidence",
-                use_container_width=True,
+                width="stretch",
             )
 
             if submitted:
-                clean_title = rep_title.strip()
-                if not clean_title:
-                    st.error("Please enter a brief Incident Description before submitting.")
+                try:
+                    new_inc = score_emergency_report(
+                        title=rep_title,
+                        sector=rep_sector,
+                        disaster_type=rep_type,
+                        urgency=rep_urgency,
+                        simulate_duplicate=sim_duplicate,
+                        existing_custom_count=len(st.session_state.custom_incidents),
+                    )
+                except ValueError as err:
+                    st.error(str(err))
                 else:
-                    new_id = f"INC-{906 + len(st.session_state.custom_incidents)}"
-                    base_lat, base_lon = sector_coords.get(rep_sector, CITY_CENTER)
-                    offset = 0.0012 * (len(st.session_state.custom_incidents) + 1)
-
-                    if sim_duplicate:
-                        calc_conf = 0.31
-                        dup_status = "⚠️ FLAGGED: Duplicate Image Hash Match"
-                        is_ver = False
-                    else:
-                        calc_conf = 0.93 if rep_urgency == "CRITICAL" else 0.84
-                        dup_status = "Clear (Unique Image)"
-                        is_ver = True
-
-                    now_hm = datetime.now().strftime("%H:%M")
-                    new_inc = {
-                        "incident_id": new_id,
-                        "title": clean_title,
-                        "type": rep_type,
-                        "urgency": rep_urgency,
-                        "confidence": calc_conf,
-                        "lat": round(base_lat + offset, 4),
-                        "lon": round(base_lon - offset, 4),
-                        "sector": rep_sector,
-                        "reported_at": now_hm,
-                        "verified": is_ver,
-                        "duplicate_warning": dup_status,
-                    }
+                    new_id = new_inc["incident_id"]
+                    calc_conf = new_inc["confidence"]
+                    dup_status = new_inc["duplicate_warning"]
                     st.session_state.custom_incidents.insert(0, new_inc)
 
                     append_audit_event(
@@ -1761,7 +1739,7 @@ elif selected_section == "4. Future Intelligence":
         st.session_state.future_horizon_min = selected_horizon
     with ctrl_c3:
         st.markdown("<div style='height:26px;'></div>", unsafe_allow_html=True)
-        if st.button("📝 Log Future Projection to Audit Trail", use_container_width=True):
+        if st.button("📝 Log Future Projection to Audit Trail", width="stretch"):
             append_audit_event(
                 st.session_state.audit_log,
                 stage="SIMULATE",
@@ -2023,6 +2001,7 @@ elif selected_section == "5. Rescue Planning":
         )
         rescue_map = build_eoc_city_map(
             selected_scenario,
+            roads_override=active_roads,
             rescue_routes=plan_result["map_routes"],
         )
         st_folium(rescue_map, use_container_width=True, height=520, returned_objects=[])
@@ -2037,7 +2016,7 @@ elif selected_section == "5. Rescue Planning":
 
         st.dataframe(df_strategy_comp, width="stretch", hide_index=True)
 
-        if st.button("🚑 Confirm & Dispatch Active Resource Allocation", use_container_width=True):
+        if st.button("🚑 Confirm & Dispatch Active Resource Allocation", width="stretch"):
             append_audit_event(
                 st.session_state.audit_log,
                 stage="OPTIMIZE",
@@ -2241,14 +2220,14 @@ else:
 
     with aud_c2:
         st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
-        if st.button("🔍 VERIFY AUDIT INTEGRITY", use_container_width=True):
+        if st.button("🔍 VERIFY AUDIT INTEGRITY", width="stretch"):
             recheck = verify_audit_chain_detailed(st.session_state.audit_log)
             if recheck["overall_valid"]:
                 st.success(f"VERIFIED: {recheck['summary_message']}")
             else:
                 st.error(f"INTEGRITY FAILURE: {recheck['summary_message']}")
 
-        if st.button("📋 Record Risk & Final Status Cycle", use_container_width=True):
+        if st.button("📋 Record Risk & Final Status Cycle", width="stretch"):
             append_audit_event(
                 st.session_state.audit_log,
                 stage="ESTIMATE",
@@ -2268,14 +2247,14 @@ else:
 
     with aud_c3:
         st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
-        if st.button("🧪 Simulate Tampering on AUD-002 (Demo)", use_container_width=True):
+        if st.button("🧪 Simulate Tampering on AUD-002 (Demo)", width="stretch"):
             if len(st.session_state.audit_log) >= 2:
                 st.session_state.audit_log[1]["details"] = (
                     "TAMPERED RECORD: Unauthorized edit to incident verification score"
                 )
                 st.rerun()
 
-        if st.button("🔄 Restore Intact Audit Log", use_container_width=True):
+        if st.button("🔄 Restore Intact Audit Log", width="stretch"):
             st.session_state.audit_log = create_initial_audit_log()
             st.rerun()
 

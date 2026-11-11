@@ -659,3 +659,5 @@ def get_recent_activity() -> pd.DataFrame:
         },
     ]
     return pd.DataFrame(rows)
+
+
