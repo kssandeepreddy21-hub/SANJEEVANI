@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 import pytest
 from streamlit.testing.v1 import AppTest
 
-from sanjeevani import config, dashboard_osm, data, evidence
+from sanjeevani import config, dashboard_evidence, dashboard_osm, data
 from sanjeevani.osm_data_loader import load_dashboard_payload
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -186,8 +186,8 @@ def test_live_mock_multidigraph_corridor_workflows():
     assert len(rt_res["primary_coords"]) >= 2
 
     # Member 2 report queue: verified vs unverified vs simulated duplicate
-    r_ok = evidence.score_emergency_report("Flooded Clinic", "Sector 1 – Central Civic Hub", "Medical Evacuation", "CRITICAL", False, 0)
-    r_dup = evidence.score_emergency_report("Old Photo", "Sector 2 – East Floodplain", "Flash Flood Entrapment", "WARNING", True, 1)
+    r_ok = dashboard_evidence.score_emergency_report("Flooded Clinic", "Sector 1 – Central Civic Hub", "Medical Evacuation", "CRITICAL", False, 0)
+    r_dup = dashboard_evidence.score_emergency_report("Old Photo", "Sector 2 – East Floodplain", "Flash Flood Entrapment", "WARNING", True, 1)
     inc_df = pd.DataFrame([r_ok, r_dup])
 
     snapped_df, bridged = dashboard_osm.snap_emergency_reports_to_corridor(inc_df, corridor_graph=g)

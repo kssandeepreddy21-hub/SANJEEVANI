@@ -1,12 +1,18 @@
 # Python virtual environments
 .venv/
 venv/
+env/
+ENV/
 
 # Python cache and testing
 __pycache__/
 *.pyc
 *.py[cod]
+*$py.class
+*.so
 .pytest_cache/
+.coverage
+htmlcov/
 
 # IDE files
 .vscode/
@@ -16,10 +22,19 @@ __pycache__/
 .env
 .env.*
 !.env.example
+*.pem
+*.key
 
-# OS files
+# Operating system files
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Runtime evidence and demonstration artifacts
+data/images/*
+!data/images/.gitkeep
+data/reports/*
+!data/reports/.gitkeep
 
 # Large RESQ-AI / OSM geographical data files
 *.graphml

@@ -73,7 +73,7 @@ from sanjeevani.decision import (
     compare_all_strategies,
     get_strategy_names,
 )
-from sanjeevani.evidence import (
+from sanjeevani.dashboard_evidence import (
     SECTOR_COORDINATES,
     filter_incident_reports,
     score_emergency_report,
@@ -1228,8 +1228,8 @@ def _render_osm_section(section: str) -> None:
 
     elif section == NAV_SECTIONS[4]:
         _render_provenance_badges([
-            ("Simulated Evidence Mode: evidence.py rule scoring active", "#FACC15"),
-            ("Pending from Member 2: image_analysis.py, confidence.py, storage.py (NLP/CV/DB)", "#F97316"),
+            ("Dashboard Evidence Adapter: dashboard_evidence.py rule scoring active", "#FACC15"),
+            ("Member 2 NLP/CV/DB Modules Merged: evidence.py, image_analysis.py, confidence.py, storage.py", "#22C55E"),
             ("OSM Bridge: Verified non-duplicate reports snap to nearest Bengaluru nodes", "#38BDF8"),
         ])
         ev_metrics = summarize_evidence_metrics(df_incidents_now)
@@ -1724,8 +1724,8 @@ def _render_synthetic_section(section: str) -> None:
 
     elif section == NAV_SECTIONS[4]:
         _render_provenance_badges([
-            ("Simulated Evidence Mode: evidence.py rule scoring", "#FACC15"),
-            ("Pending from Member 2: image_analysis.py, confidence.py, storage.py", "#F97316"),
+            ("Dashboard Evidence Adapter: dashboard_evidence.py rule scoring", "#FACC15"),
+            ("Member 2 NLP/CV/DB Modules Merged: evidence.py, image_analysis.py, confidence.py, storage.py", "#22C55E"),
         ])
         df_inc_all = get_active_incidents_df(selected_scenario)
         ev_metrics = summarize_evidence_metrics(df_inc_all)

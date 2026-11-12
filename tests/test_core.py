@@ -21,7 +21,15 @@ import unittest
 import folium
 import pandas as pd
 
-from sanjeevani import audit, benchmark, data, decision, evidence, resilience, twin
+from sanjeevani import (
+    audit,
+    benchmark,
+    data,
+    decision,
+    dashboard_evidence,
+    resilience,
+    twin,
+)
 
 
 ALL_ROAD_IDS = {
@@ -160,7 +168,7 @@ class TestSanjeevaniCore(unittest.TestCase):
         self.assertEqual(len(comp_empty), 3)
         self.assertTrue((comp_empty["Incidents Reached"] == 0).all())
 
-        ev_summary = evidence.summarize_evidence_metrics(empty_df)
+        ev_summary = dashboard_evidence.summarize_evidence_metrics(empty_df)
         self.assertEqual(ev_summary["total_reports"], 0)
         self.assertEqual(ev_summary["mean_confidence_pct"], 0.0)
 
@@ -201,8 +209,8 @@ class TestSanjeevaniCore(unittest.TestCase):
         self.assertEqual(stress["isolated_population"], 8400)
 
     def test_evidence_module_interfaces(self):
-        """5. Evidence module (sanjeevani/evidence.py) interfaces & XSS sanitization."""
-        scored = evidence.score_emergency_report(
+        """5. Dashboard evidence module (sanjeevani/dashboard_evidence.py) interfaces & XSS sanitization."""
+        scored = dashboard_evidence.score_emergency_report(
             title="<script>alert('xss')</script> Flooded Clinic",
             sector="Sector 4 Lowlands",
             disaster_type="Medical Evacuation",
@@ -215,7 +223,7 @@ class TestSanjeevaniCore(unittest.TestCase):
         self.assertTrue(scored["verified"])
         self.assertGreaterEqual(scored["confidence"], 0.90)
 
-        dup_scored = evidence.score_emergency_report(
+        dup_scored = dashboard_evidence.score_emergency_report(
             title="Recycled Flood Image",
             sector="East Basin",
             disaster_type="Flash Flood Entrapment",
@@ -227,14 +235,14 @@ class TestSanjeevaniCore(unittest.TestCase):
         self.assertIn("FLAGGED", dup_scored["duplicate_warning"])
 
         with self.assertRaises(ValueError):
-            evidence.score_emergency_report(
+            dashboard_evidence.score_emergency_report(
                 title="   ",
                 sector="East Basin",
                 disaster_type="Road Obstruction",
                 urgency="WARNING",
             )
 
-        filtered_crit = evidence.filter_incident_reports(
+        filtered_crit = dashboard_evidence.filter_incident_reports(
             self.incidents,
             urgency_filter="CRITICAL",
             verify_filter="Verified Only",
@@ -403,7 +411,7 @@ class TestSanjeevaniCore(unittest.TestCase):
         def _check():
             base_df = self.incidents.copy()
             # 1. Incident submission (unique + duplicate)
-            new_unique = evidence.score_emergency_report(
+            new_unique = dashboard_evidence.score_emergency_report(
                 title="Trapped Commuters Near Underpass",
                 sector="Sector 4 Lowlands",
                 disaster_type="Flash Flood Entrapment",
@@ -411,7 +419,7 @@ class TestSanjeevaniCore(unittest.TestCase):
                 simulate_duplicate=False,
                 existing_custom_count=0,
             )
-            new_dup = evidence.score_emergency_report(
+            new_dup = dashboard_evidence.score_emergency_report(
                 title="Recycled Social Media Flood Image",
                 sector="East Basin",
                 disaster_type="Flash Flood Entrapment",
@@ -427,7 +435,7 @@ class TestSanjeevaniCore(unittest.TestCase):
                 [pd.DataFrame([new_dup, new_unique]), base_df],
                 ignore_index=True,
             )
-            metrics = evidence.summarize_evidence_metrics(combined_df)
+            metrics = dashboard_evidence.summarize_evidence_metrics(combined_df)
             self.assertEqual(metrics["total_reports"], 7)
             self.assertGreaterEqual(metrics["duplicate_flagged_count"], 2)
 
@@ -435,7 +443,7 @@ class TestSanjeevaniCore(unittest.TestCase):
             combined_df.loc[
                 combined_df["incident_id"] == new_dup["incident_id"], "verified"
             ] = True
-            verified_only = evidence.filter_incident_reports(
+            verified_only = dashboard_evidence.filter_incident_reports(
                 combined_df,
                 verify_filter="Verified Only",
             )

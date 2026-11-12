@@ -5,7 +5,7 @@ import sys
 import networkx as nx
 import pandas as pd
 
-from sanjeevani import evidence
+from sanjeevani import dashboard_evidence
 from sanjeevani.decision import allocate_emergency_resources, compare_rescue_strategies, find_shortest_safe_route
 from sanjeevani.incident_bridge import incident_to_osm_node, incidents_to_affected_locations
 from sanjeevani.twin import predict_future_scenarios, simulate_rainfall
@@ -30,7 +30,7 @@ def test_member2_incident_to_osm_route_and_allocation():
     G = _build_mini_bengaluru_multidigraph()
     G_orig_edges = G.number_of_edges()
 
-    inc_valid = evidence.score_emergency_report(
+    inc_valid = dashboard_evidence.score_emergency_report(
         title="Flooding near junction",
         sector="Central Riverfront",
         disaster_type="Flash Flood Entrapment",
@@ -40,7 +40,7 @@ def test_member2_incident_to_osm_route_and_allocation():
     inc_valid["lat"] = 12.9761
     inc_valid["lon"] = 77.6001
 
-    inc_dup = evidence.score_emergency_report(
+    inc_dup = dashboard_evidence.score_emergency_report(
         title="Recycled clip",
         sector="East Basin",
         disaster_type="Flash Flood Entrapment",
