@@ -1,0 +1,1433 @@
+{
+  "metadata": {
+    "module": "SANJEEVANI_Member_3_Disaster_Simulation_and_Rescue_Optimization",
+    "city": "Bengaluru, Karnataka, India",
+    "data_source": "data\\raw\\planet_77.46_12.907_d3d9fd17.osm.pbf",
+    "execution_time_sec": 76.52
+  },
+  "phase1_network_validation": {
+    "graph_file": "data\\processed\\bengaluru_osm.graphml",
+    "graph_type": "MultiDiGraph",
+    "is_directed": true,
+    "is_multigraph": true,
+    "total_nodes": 437698,
+    "total_directed_edges": 921188,
+    "total_unique_road_ways": 135302,
+    "central_corridor_nodes": 32722,
+    "central_corridor_directed_edges": 63118,
+    "validation_status": "PASS"
+  },
+  "phase2_vulnerability": {
+    "full_city": {
+      "total_directed_edges": 921188,
+      "total_unique_road_ways": 135302,
+      "average_edge_vulnerability": 0.5073,
+      "average_way_vulnerability": 0.5105,
+      "edge_risk_distribution": {
+        "LOW": 30783,
+        "MODERATE": 679327,
+        "HIGH": 209227,
+        "CRITICAL": 1851
+      },
+      "way_risk_distribution": {
+        "LOW": 5529,
+        "MODERATE": 100806,
+        "HIGH": 28489,
+        "CRITICAL": 478
+      },
+      "estimated_edges": 921188,
+      "observed_edges": 0,
+      "methodology_note": "Prototype infrastructure-based flood vulnerability estimation from OSM tags. Values are estimated (not direct hydrological flood-depth measurements) unless marked as observed."
+    },
+    "central_corridor": {
+      "total_directed_edges": 63118,
+      "total_unique_road_ways": 9521,
+      "average_edge_vulnerability": 0.498,
+      "average_way_vulnerability": 0.4954,
+      "edge_risk_distribution": {
+        "LOW": 4772,
+        "MODERATE": 33170,
+        "HIGH": 25045,
+        "CRITICAL": 131
+      },
+      "way_risk_distribution": {
+        "LOW": 951,
+        "MODERATE": 4866,
+        "HIGH": 3655,
+        "CRITICAL": 49
+      },
+      "estimated_edges": 63118,
+      "observed_edges": 0,
+      "methodology_note": "Prototype infrastructure-based flood vulnerability estimation from OSM tags. Values are estimated (not direct hydrological flood-depth measurements) unless marked as observed."
+    }
+  },
+  "phase3_rainfall_simulation": {
+    "full_city_heavy_rainfall_85": {
+      "rainfall_intensity": 85,
+      "is_hypothetical_scenario": true,
+      "total_directed_edges": 921188,
+      "total_unique_road_ways": 135302,
+      "directed_edge_counts": {
+        "OPEN": 138468,
+        "AT RISK": 781571,
+        "BLOCKED": 1149
+      },
+      "unique_road_way_counts": {
+        "OPEN": 14185,
+        "AT RISK": 120769,
+        "BLOCKED": 348
+      },
+      "road_length_km": {
+        "OPEN": 4378.373,
+        "AT RISK": 26816.462,
+        "BLOCKED": 27.438
+      },
+      "blocked_edges_by_highway": {
+        "secondary": 33,
+        "service": 660,
+        "tertiary": 91,
+        "primary": 47,
+        "primary_link": 4,
+        "trunk": 27,
+        "residential": 274,
+        "unclassified": 2,
+        "tertiary_link": 11
+      },
+      "at_risk_edges_by_highway": {
+        "service": 186599,
+        "residential": 575305,
+        "secondary": 203,
+        "primary": 29,
+        "living_street": 10804,
+        "unclassified": 4964,
+        "tertiary_link": 319,
+        "tertiary": 3189,
+        "secondary_link": 16,
+        "trunk_link": 2,
+        "road": 24,
+        "trunk": 109,
+        "primary_link": 8
+      },
+      "blocked_bridge_ways": 0,
+      "blocked_tunnel_ways": 328
+    },
+    "corridor_progression_scenarios": [
+      {
+        "time_minutes": 0,
+        "rainfall_intensity": 55.0,
+        "directed_edge_counts": {
+          "OPEN": 62953,
+          "AT RISK": 165,
+          "BLOCKED": 0
+        },
+        "unique_road_way_counts": {
+          "OPEN": 9463,
+          "AT RISK": 58,
+          "BLOCKED": 0
+        },
+        "road_length_km": {
+          "OPEN": 1635.627,
+          "AT RISK": 3.216,
+          "BLOCKED": 0.0
+        }
+      },
+      {
+        "time_minutes": 15,
+        "rainfall_intensity": 65.0,
+        "directed_edge_counts": {
+          "OPEN": 62905,
+          "AT RISK": 213,
+          "BLOCKED": 0
+        },
+        "unique_road_way_counts": {
+          "OPEN": 9453,
+          "AT RISK": 68,
+          "BLOCKED": 0
+        },
+        "road_length_km": {
+          "OPEN": 1634.513,
+          "AT RISK": 4.329,
+          "BLOCKED": 0.0
+        }
+      },
+      {
+        "time_minutes": 30,
+        "rainfall_intensity": 75.0,
+        "directed_edge_counts": {
+          "OPEN": 37714,
+          "AT RISK": 25382,
+          "BLOCKED": 22
+        },
+        "unique_road_way_counts": {
+          "OPEN": 5791,
+          "AT RISK": 3718,
+          "BLOCKED": 12
+        },
+        "road_length_km": {
+          "OPEN": 1125.364,
+          "AT RISK": 512.877,
+          "BLOCKED": 0.602
+        }
+      },
+      {
+        "time_minutes": 60,
+        "rainfall_intensity": 95.0,
+        "directed_edge_counts": {
+          "OPEN": 9855,
+          "AT RISK": 53114,
+          "BLOCKED": 149
+        },
+        "unique_road_way_counts": {
+          "OPEN": 1625,
+          "AT RISK": 7842,
+          "BLOCKED": 54
+        },
+        "road_length_km": {
+          "OPEN": 258.558,
+          "AT RISK": 1377.284,
+          "BLOCKED": 3.001
+        }
+      }
+    ]
+  },
+  "phase4_cascading_and_facilities": {
+    "facility_counts_citywide": {
+      "hospitals": {
+        "raw_nodes": 847,
+        "raw_ways": 222,
+        "raw_relations": 7,
+        "duplicate_poi_nodes_removed": 30,
+        "unique_facilities": 1046,
+        "named_facilities": 1031,
+        "unnamed_facilities": 15
+      },
+      "fire_stations": {
+        "raw_nodes": 4,
+        "raw_ways": 16,
+        "raw_relations": 0,
+        "duplicate_poi_nodes_removed": 1,
+        "unique_facilities": 19,
+        "named_facilities": 19,
+        "unnamed_facilities": 0
+      },
+      "police_stations": {
+        "raw_nodes": 67,
+        "raw_ways": 71,
+        "raw_relations": 0,
+        "duplicate_poi_nodes_removed": 13,
+        "unique_facilities": 125,
+        "named_facilities": 118,
+        "unnamed_facilities": 7
+      },
+      "suitable_shelters": {
+        "raw_nodes": 19,
+        "raw_ways": 23,
+        "raw_relations": 0,
+        "duplicate_poi_nodes_removed": 0,
+        "unique_facilities": 42,
+        "named_facilities": 6,
+        "unnamed_facilities": 36
+      }
+    },
+    "excluded_non_emergency_shelters": 292,
+    "verification_disclaimer": "All facility records are extracted from crowd-sourced OpenStreetMap data and have NOT been independently verified for operational bed/shelter capacity.",
+    "connectivity_impact": {
+      "total_nodes": 32722,
+      "baseline_components": 60,
+      "post_failure_components": 121,
+      "new_components_created": 61,
+      "baseline_largest_component_size": 32498,
+      "post_failure_largest_component_size": 32434,
+      "newly_disconnected_node_count": 64,
+      "newly_disconnected_nodes": [
+        "10019807734",
+        "10019811268",
+        "10019859421",
+        "10019859430",
+        "10019859431",
+        "10019859432",
+        "10019859449",
+        "10019859451",
+        "10093910953",
+        "10164770586",
+        "10293847440",
+        "10566851444",
+        "10566851445",
+        "10578471364",
+        "10578471365",
+        "10775092765",
+        "10775092766",
+        "10980046231",
+        "10989320895",
+        "11054990207",
+        "11387092621",
+        "11388950673",
+        "11389008920",
+        "11389008921",
+        "11389032467",
+        "11565016467",
+        "11565016468",
+        "11853318582",
+        "12088346458",
+        "12088346459",
+        "12088346464",
+        "12206469060",
+        "12206469061",
+        "12206469062",
+        "12206469063",
+        "12206469064",
+        "12206469065",
+        "12206469066",
+        "12206469069",
+        "12206469071",
+        "12250468129",
+        "13680950115",
+        "13780598653",
+        "13780598654",
+        "13780598655",
+        "13780598656",
+        "13780598657",
+        "13780598658",
+        "13780598659",
+        "13780598660",
+        "14308268860",
+        "1748696126",
+        "1780485240",
+        "1780485243",
+        "1820387930",
+        "3343549688",
+        "3343549795",
+        "3756218751",
+        "4352541544",
+        "470253734",
+        "6904901496",
+        "7255929421",
+        "9573433550",
+        "9910012975"
+      ],
+      "newly_isolated_node_count": 59,
+      "failed_directed_edges": 149,
+      "failed_unique_road_ways": 54
+    },
+    "facility_impact": {
+      "hospitals": {
+        "total_evaluated": 140,
+        "unmapped_to_road_network": 0,
+        "inaccessible_count": 4,
+        "increased_travel_time_count": 2,
+        "unaffected_count": 129,
+        "verification_status": "unverified_osm_record"
+      },
+      "fire_stations": {
+        "total_evaluated": 4,
+        "unmapped_to_road_network": 0,
+        "inaccessible_count": 0,
+        "increased_travel_time_count": 0,
+        "unaffected_count": 4,
+        "verification_status": "unverified_osm_record"
+      },
+      "police_stations": {
+        "total_evaluated": 36,
+        "unmapped_to_road_network": 0,
+        "inaccessible_count": 0,
+        "increased_travel_time_count": 1,
+        "unaffected_count": 34,
+        "verification_status": "unverified_osm_record"
+      },
+      "suitable_shelters": {
+        "total_evaluated": 5,
+        "unmapped_to_road_network": 0,
+        "inaccessible_count": 0,
+        "increased_travel_time_count": 0,
+        "unaffected_count": 5,
+        "verification_status": "unverified_osm_record"
+      }
+    },
+    "population_impact": {
+      "population_data_available": true,
+      "population_data_type": "synthetic_scenario_assumption",
+      "is_synthetic": true,
+      "disconnected_population": 0,
+      "delayed_access_population": 480,
+      "total_affected_population": 480,
+      "note": "Population figures are based on synthetic scenario inputs for prototype demonstration."
+    }
+  },
+  "phase5_rescue_routing": {
+    "dispatch_origin_node": "13455267145",
+    "target_hospital": {
+      "facility_id": "way:38536360",
+      "osm_type": "way",
+      "osm_id": "38536360",
+      "category": "hospitals",
+      "name": "K C General Hospital",
+      "is_named": true,
+      "lon": 77.5697936,
+      "lat": 12.995572163636364,
+      "nearest_node": "10060540200",
+      "snap_distance_m": 14.58,
+      "verification_status": "unverified_osm_record",
+      "data_source": "OpenStreetMap_PBF"
+    },
+    "primary_route": {
+      "reachable": true,
+      "origin": "13455267145",
+      "destination": "10060540200",
+      "optimize_for": "time",
+      "total_distance_m": 6025.26,
+      "estimated_travel_time_sec": 633.99,
+      "segment_count": 238,
+      "node_count": 239,
+      "unique_road_ids": [
+        "1466955036",
+        "124316745",
+        "763405053",
+        "691218619",
+        "498553630",
+        "544759837",
+        "1151681832",
+        "1109956874",
+        "544759838",
+        "1227562842",
+        "1125542417",
+        "1064418711",
+        "705023783",
+        "544761382",
+        "1205167665",
+        "1205167664",
+        "544761380",
+        "1110192331",
+        "544761378",
+        "542070647",
+        "1148395512",
+        "107215088",
+        "1148718165",
+        "362900184",
+        "359476587",
+        "760700372",
+        "503401204",
+        "1148408385",
+        "1539996893",
+        "152051153",
+        "1221922603",
+        "503401203",
+        "1267185544",
+        "1148406433",
+        "1148406430",
+        "503401202",
+        "1528556614",
+        "200443106",
+        "1137011907",
+        "997923992",
+        "1343337485",
+        "1429960358",
+        "36912480",
+        "372083757",
+        "372083758",
+        "503401199",
+        "503401200",
+        "135088037",
+        "1166294047",
+        "503401197",
+        "1081215228",
+        "26808195",
+        "325436705",
+        "503401196",
+        "1104613494",
+        "1104613495",
+        "53856198",
+        "1109963875",
+        "555058107",
+        "503401195",
+        "28800644",
+        "1098777570"
+      ],
+      "at_risk_segments_count": 8,
+      "uncertain_access_segments_count": 5,
+      "uncertain_access_warnings": [
+        {
+          "from": "13455267145",
+          "to": "13455267146",
+          "road_id": "1466955036",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "13455267146",
+          "to": "13455267147",
+          "road_id": "1466955036",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "13455267147",
+          "to": "13455267148",
+          "road_id": "1466955036",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "456029902",
+          "to": "12151027187",
+          "road_id": "1098777570",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "12151027187",
+          "to": "10060540200",
+          "road_id": "1098777570",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        }
+      ],
+      "route_safety_status": "PASSABLE_WITH_AT_RISK_AND_UNCERTAIN_ACCESS",
+      "is_distinct_from_primary": null,
+      "edge_overlap_ratio": null,
+      "sample_segments": [
+        {
+          "u": "13455267145",
+          "v": "13455267146",
+          "key": 0,
+          "road_id": "1466955036",
+          "name": "",
+          "highway": "service",
+          "length_m": 13.0,
+          "travel_time_sec": 5.67,
+          "condition": "AT RISK",
+          "access_status": "uncertain_emergency_access",
+          "access_uncertain": true
+        },
+        {
+          "u": "13455267146",
+          "v": "13455267147",
+          "key": 0,
+          "road_id": "1466955036",
+          "name": "",
+          "highway": "service",
+          "length_m": 3.03,
+          "travel_time_sec": 1.32,
+          "condition": "AT RISK",
+          "access_status": "uncertain_emergency_access",
+          "access_uncertain": true
+        },
+        {
+          "u": "13455267147",
+          "v": "13455267148",
+          "key": 0,
+          "road_id": "1466955036",
+          "name": "",
+          "highway": "service",
+          "length_m": 11.96,
+          "travel_time_sec": 5.22,
+          "condition": "AT RISK",
+          "access_status": "uncertain_emergency_access",
+          "access_uncertain": true
+        },
+        {
+          "u": "13455267148",
+          "v": "12052471412",
+          "key": 0,
+          "road_id": "124316745",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 1.08,
+          "travel_time_sec": 0.13,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "12052471412",
+          "v": "11283487985",
+          "key": 0,
+          "road_id": "124316745",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 11.74,
+          "travel_time_sec": 1.41,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "11283487985",
+          "v": "1232953290",
+          "key": 0,
+          "road_id": "763405053",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 36.66,
+          "travel_time_sec": 4.4,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "1232953290",
+          "v": "13449415452",
+          "key": 0,
+          "road_id": "691218619",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 18.41,
+          "travel_time_sec": 2.21,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "13449415452",
+          "v": "248459879",
+          "key": 0,
+          "road_id": "691218619",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 22.08,
+          "travel_time_sec": 2.65,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "248459879",
+          "v": "1232953334",
+          "key": 0,
+          "road_id": "691218619",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 14.89,
+          "travel_time_sec": 1.79,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "1232953334",
+          "v": "1232953328",
+          "key": 0,
+          "road_id": "691218619",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 16.21,
+          "travel_time_sec": 1.94,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        }
+      ]
+    },
+    "alternative_route": {
+      "reachable": true,
+      "origin": "13455267145",
+      "destination": "10060540200",
+      "optimize_for": "time",
+      "total_distance_m": 8522.06,
+      "estimated_travel_time_sec": 874.5,
+      "segment_count": 375,
+      "node_count": 376,
+      "unique_road_ids": [
+        "1466955036",
+        "124316745",
+        "327639080",
+        "635340513",
+        "325833350",
+        "1015024219",
+        "132191817",
+        "23443806",
+        "766406977",
+        "133632534",
+        "1298944073",
+        "763175330",
+        "435249770",
+        "1393487705",
+        "171887405",
+        "763175328",
+        "763175329",
+        "1452617367",
+        "1452617368",
+        "498553874",
+        "375964868",
+        "224618934",
+        "1311251824",
+        "1311251823",
+        "148016866",
+        "148016873",
+        "461556532",
+        "23076927",
+        "1321767443",
+        "764332432",
+        "36907507",
+        "150808471",
+        "231895000",
+        "544757437",
+        "1246772716",
+        "544757438",
+        "322488098",
+        "1205142214",
+        "1442514003",
+        "1205142213",
+        "781001571",
+        "36958057",
+        "454013131",
+        "454013133",
+        "1413439962",
+        "454483792",
+        "1093558611",
+        "36884366",
+        "372018380",
+        "139141579",
+        "31235669",
+        "580771983",
+        "54677252",
+        "458424042",
+        "36733530",
+        "458424041",
+        "1557565523",
+        "1557565516",
+        "343205961",
+        "343205963",
+        "1104613496",
+        "1104613497",
+        "53856198",
+        "1065427106",
+        "732016015",
+        "503401195",
+        "28800647",
+        "1213217166",
+        "768544772"
+      ],
+      "at_risk_segments_count": 26,
+      "uncertain_access_segments_count": 9,
+      "uncertain_access_warnings": [
+        {
+          "from": "13455267145",
+          "to": "13455267146",
+          "road_id": "1466955036",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "13455267146",
+          "to": "13455267147",
+          "road_id": "1466955036",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "13455267147",
+          "to": "13455267148",
+          "road_id": "1466955036",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "456029899",
+          "to": "11389362912",
+          "road_id": "1213217166",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "11389362912",
+          "to": "11240433708",
+          "road_id": "1213217166",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "11240433708",
+          "to": "11240433709",
+          "road_id": "1213217166",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "11240433709",
+          "to": "7175110273",
+          "road_id": "1213217166",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "7175110273",
+          "to": "7175110272",
+          "road_id": "768544772",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        },
+        {
+          "from": "7175110272",
+          "to": "10060540200",
+          "road_id": "768544772",
+          "access_status": "uncertain_emergency_access",
+          "reason": "Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road"
+        }
+      ],
+      "route_safety_status": "PASSABLE_WITH_AT_RISK_AND_UNCERTAIN_ACCESS",
+      "is_distinct_from_primary": true,
+      "edge_overlap_ratio": 0.0672,
+      "sample_segments": [
+        {
+          "u": "13455267145",
+          "v": "13455267146",
+          "key": 0,
+          "road_id": "1466955036",
+          "name": "",
+          "highway": "service",
+          "length_m": 13.0,
+          "travel_time_sec": 5.67,
+          "condition": "AT RISK",
+          "access_status": "uncertain_emergency_access",
+          "access_uncertain": true
+        },
+        {
+          "u": "13455267146",
+          "v": "13455267147",
+          "key": 0,
+          "road_id": "1466955036",
+          "name": "",
+          "highway": "service",
+          "length_m": 3.03,
+          "travel_time_sec": 1.32,
+          "condition": "AT RISK",
+          "access_status": "uncertain_emergency_access",
+          "access_uncertain": true
+        },
+        {
+          "u": "13455267147",
+          "v": "13455267148",
+          "key": 0,
+          "road_id": "1466955036",
+          "name": "",
+          "highway": "service",
+          "length_m": 11.96,
+          "travel_time_sec": 5.22,
+          "condition": "AT RISK",
+          "access_status": "uncertain_emergency_access",
+          "access_uncertain": true
+        },
+        {
+          "u": "13455267148",
+          "v": "12052471412",
+          "key": 0,
+          "road_id": "124316745",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 1.08,
+          "travel_time_sec": 0.13,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "12052471412",
+          "v": "11283487985",
+          "key": 0,
+          "road_id": "124316745",
+          "name": "Residency Road",
+          "highway": "primary",
+          "length_m": 11.74,
+          "travel_time_sec": 1.41,
+          "condition": "OPEN",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "11283487985",
+          "v": "12102800820",
+          "key": 0,
+          "road_id": "327639080",
+          "name": "",
+          "highway": "primary_link",
+          "length_m": 17.49,
+          "travel_time_sec": 4.09,
+          "condition": "AT RISK",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "12102800820",
+          "v": "3344494913",
+          "key": 0,
+          "road_id": "327639080",
+          "name": "",
+          "highway": "primary_link",
+          "length_m": 12.61,
+          "travel_time_sec": 2.95,
+          "condition": "AT RISK",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "3344494913",
+          "v": "5993280645",
+          "key": 0,
+          "road_id": "327639080",
+          "name": "",
+          "highway": "primary_link",
+          "length_m": 7.67,
+          "travel_time_sec": 1.79,
+          "condition": "AT RISK",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "5993280645",
+          "v": "3344494915",
+          "key": 0,
+          "road_id": "327639080",
+          "name": "",
+          "highway": "primary_link",
+          "length_m": 6.24,
+          "travel_time_sec": 1.46,
+          "condition": "AT RISK",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        },
+        {
+          "u": "3344494915",
+          "v": "13734962761",
+          "key": 0,
+          "road_id": "327639080",
+          "name": "",
+          "highway": "primary_link",
+          "length_m": 0.72,
+          "travel_time_sec": 0.17,
+          "condition": "AT RISK",
+          "access_status": "public_drivable_unverified",
+          "access_uncertain": false
+        }
+      ]
+    },
+    "multi_destination_summary": {
+      "destinations_count": 5,
+      "reachable_count": 5,
+      "unreachable_count": 0
+    }
+  },
+  "phase6_resource_allocation": {
+    "strategy_used": "budget_aware_optimized",
+    "metrics": {
+      "strategy": "budget_aware_optimized",
+      "total_demand_population": 1080,
+      "total_served_population": 530,
+      "total_unserved_population": 550,
+      "population_coverage_pct": 49.07,
+      "locations_fully_served": 1,
+      "locations_partially_served": 2,
+      "locations_unserved": 3,
+      "total_response_distance_m": 17786.66,
+      "average_response_distance_m": 2964.44,
+      "average_response_time_sec": 431.33,
+      "total_units_available": 8,
+      "total_units_deployed": 6,
+      "resource_utilization_pct": 75.0,
+      "total_budget_available": 3200.0,
+      "total_budget_used": 3100.0,
+      "budget_utilization_pct": 96.88
+    },
+    "allocations": [
+      {
+        "location_id": "ZONE_5_45444044",
+        "location_name": "Bowring and Lady Curzon Hospitals",
+        "location_priority": 10.0,
+        "resource_id": "ALS_AMBULANCE_UNIT",
+        "resource_type": "advanced_life_support_ambulance",
+        "units_deployed": 3,
+        "population_served": 240,
+        "distance_m": 2139.76,
+        "estimated_response_time_sec": 240.72,
+        "cost": 1350.0,
+        "strategy_used": "budget_aware_optimized"
+      },
+      {
+        "location_id": "ZONE_3_38750705",
+        "location_name": "Vydehi Superspeciality Hospital",
+        "location_priority": 8.5,
+        "resource_id": "ALS_AMBULANCE_UNIT",
+        "resource_type": "advanced_life_support_ambulance",
+        "units_deployed": 1,
+        "population_served": 80,
+        "distance_m": 2671.06,
+        "estimated_response_time_sec": 300.49,
+        "cost": 450.0,
+        "strategy_used": "budget_aware_optimized"
+      },
+      {
+        "location_id": "ZONE_3_38750705",
+        "location_name": "Vydehi Superspeciality Hospital",
+        "location_priority": 8.5,
+        "resource_id": "NDRF_RESCUE_BOAT",
+        "resource_type": "inflatable_flood_rescue_boat",
+        "units_deployed": 1,
+        "population_served": 100,
+        "distance_m": 2671.06,
+        "estimated_response_time_sec": 480.79,
+        "cost": 650.0,
+        "strategy_used": "budget_aware_optimized"
+      },
+      {
+        "location_id": "ZONE_1_38536360",
+        "location_name": "K C General Hospital",
+        "location_priority": 9.5,
+        "resource_id": "NDRF_RESCUE_BOAT",
+        "resource_type": "inflatable_flood_rescue_boat",
+        "units_deployed": 1,
+        "population_served": 110,
+        "distance_m": 6025.26,
+        "estimated_response_time_sec": 1084.55,
+        "cost": 650.0,
+        "strategy_used": "budget_aware_optimized"
+      }
+    ],
+    "location_outcomes": [
+      {
+        "location_id": "ZONE_1_38536360",
+        "name": "K C General Hospital",
+        "priority": 9.5,
+        "initial_demand": 220,
+        "served_population": 110,
+        "unserved_population": 110,
+        "coverage_pct": 50.0,
+        "status": "PARTIALLY_SERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_2_38542913",
+        "name": "St Marthas Hospital",
+        "priority": 4.0,
+        "initial_demand": 140,
+        "served_population": 0,
+        "unserved_population": 140,
+        "coverage_pct": 0.0,
+        "status": "UNSERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_3_38750705",
+        "name": "Vydehi Superspeciality Hospital",
+        "priority": 8.5,
+        "initial_demand": 180,
+        "served_population": 180,
+        "unserved_population": 0,
+        "coverage_pct": 100.0,
+        "status": "FULLY_SERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_4_45185764",
+        "name": "Bhagwan Mahaveer Jain Hospital",
+        "priority": 3.0,
+        "initial_demand": 120,
+        "served_population": 0,
+        "unserved_population": 120,
+        "coverage_pct": 0.0,
+        "status": "UNSERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_5_45444044",
+        "name": "Bowring and Lady Curzon Hospitals",
+        "priority": 10.0,
+        "initial_demand": 260,
+        "served_population": 240,
+        "unserved_population": 20,
+        "coverage_pct": 92.31,
+        "status": "PARTIALLY_SERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_6_52063534",
+        "name": "Sir Haji Ismail Gosha Sait Hospital",
+        "priority": 6.0,
+        "initial_demand": 160,
+        "served_population": 0,
+        "unserved_population": 160,
+        "coverage_pct": 0.0,
+        "status": "UNSERVED",
+        "is_synthetic_population": true
+      }
+    ]
+  },
+  "phase7_strategy_comparison": {
+    "comparison_summary": [
+      {
+        "strategy": "nearest_resource_first",
+        "served_population": 420,
+        "unserved_population": 660,
+        "population_coverage_pct": 38.89,
+        "priority_weighted_served": 3560.0,
+        "total_response_distance_m": 13606.36,
+        "average_response_distance_m": 2267.73,
+        "average_response_time_sec": 311.9,
+        "total_units_deployed": 6,
+        "resource_utilization_pct": 75.0,
+        "total_budget_used": 3100.0,
+        "budget_utilization_pct": 96.88
+      },
+      {
+        "strategy": "highest_priority_first",
+        "served_population": 480,
+        "unserved_population": 600,
+        "population_coverage_pct": 44.44,
+        "priority_weighted_served": 4690.0,
+        "total_response_distance_m": 20609.56,
+        "average_response_distance_m": 3434.93,
+        "average_response_time_sec": 522.0,
+        "total_units_deployed": 6,
+        "resource_utilization_pct": 75.0,
+        "total_budget_used": 3100.0,
+        "budget_utilization_pct": 96.88
+      },
+      {
+        "strategy": "budget_aware_optimized",
+        "served_population": 530,
+        "unserved_population": 550,
+        "population_coverage_pct": 49.07,
+        "priority_weighted_served": 4975.0,
+        "total_response_distance_m": 17786.66,
+        "average_response_distance_m": 2964.44,
+        "average_response_time_sec": 431.33,
+        "total_units_deployed": 6,
+        "resource_utilization_pct": 75.0,
+        "total_budget_used": 3100.0,
+        "budget_utilization_pct": 96.88
+      }
+    ],
+    "recommended_strategy": "budget_aware_optimized",
+    "recommendation_reason": "Strategy 'budget_aware_optimized' achieved the highest priority-weighted population coverage (4975.0 priority-person units, 49.07% total demand covered) with an average response time of 431.33s."
+  },
+  "phase6_and_7_resource_and_strategies": {
+    "comparison_summary": [
+      {
+        "strategy": "nearest_resource_first",
+        "served_population": 420,
+        "unserved_population": 660,
+        "population_coverage_pct": 38.89,
+        "priority_weighted_served": 3560.0,
+        "total_response_distance_m": 13606.36,
+        "average_response_distance_m": 2267.73,
+        "average_response_time_sec": 311.9,
+        "total_units_deployed": 6,
+        "resource_utilization_pct": 75.0,
+        "total_budget_used": 3100.0,
+        "budget_utilization_pct": 96.88
+      },
+      {
+        "strategy": "highest_priority_first",
+        "served_population": 480,
+        "unserved_population": 600,
+        "population_coverage_pct": 44.44,
+        "priority_weighted_served": 4690.0,
+        "total_response_distance_m": 20609.56,
+        "average_response_distance_m": 3434.93,
+        "average_response_time_sec": 522.0,
+        "total_units_deployed": 6,
+        "resource_utilization_pct": 75.0,
+        "total_budget_used": 3100.0,
+        "budget_utilization_pct": 96.88
+      },
+      {
+        "strategy": "budget_aware_optimized",
+        "served_population": 530,
+        "unserved_population": 550,
+        "population_coverage_pct": 49.07,
+        "priority_weighted_served": 4975.0,
+        "total_response_distance_m": 17786.66,
+        "average_response_distance_m": 2964.44,
+        "average_response_time_sec": 431.33,
+        "total_units_deployed": 6,
+        "resource_utilization_pct": 75.0,
+        "total_budget_used": 3100.0,
+        "budget_utilization_pct": 96.88
+      }
+    ],
+    "recommended_strategy": "budget_aware_optimized",
+    "recommendation_reason": "Strategy 'budget_aware_optimized' achieved the highest priority-weighted population coverage (4975.0 priority-person units, 49.07% total demand covered) with an average response time of 431.33s.",
+    "recommended_allocations": [
+      {
+        "location_id": "ZONE_5_45444044",
+        "location_name": "Bowring and Lady Curzon Hospitals",
+        "location_priority": 10.0,
+        "resource_id": "ALS_AMBULANCE_UNIT",
+        "resource_type": "advanced_life_support_ambulance",
+        "units_deployed": 3,
+        "population_served": 240,
+        "distance_m": 2139.76,
+        "estimated_response_time_sec": 240.72,
+        "cost": 1350.0,
+        "strategy_used": "budget_aware_optimized"
+      },
+      {
+        "location_id": "ZONE_3_38750705",
+        "location_name": "Vydehi Superspeciality Hospital",
+        "location_priority": 8.5,
+        "resource_id": "ALS_AMBULANCE_UNIT",
+        "resource_type": "advanced_life_support_ambulance",
+        "units_deployed": 1,
+        "population_served": 80,
+        "distance_m": 2671.06,
+        "estimated_response_time_sec": 300.49,
+        "cost": 450.0,
+        "strategy_used": "budget_aware_optimized"
+      },
+      {
+        "location_id": "ZONE_3_38750705",
+        "location_name": "Vydehi Superspeciality Hospital",
+        "location_priority": 8.5,
+        "resource_id": "NDRF_RESCUE_BOAT",
+        "resource_type": "inflatable_flood_rescue_boat",
+        "units_deployed": 1,
+        "population_served": 100,
+        "distance_m": 2671.06,
+        "estimated_response_time_sec": 480.79,
+        "cost": 650.0,
+        "strategy_used": "budget_aware_optimized"
+      },
+      {
+        "location_id": "ZONE_1_38536360",
+        "location_name": "K C General Hospital",
+        "location_priority": 9.5,
+        "resource_id": "NDRF_RESCUE_BOAT",
+        "resource_type": "inflatable_flood_rescue_boat",
+        "units_deployed": 1,
+        "population_served": 110,
+        "distance_m": 6025.26,
+        "estimated_response_time_sec": 1084.55,
+        "cost": 650.0,
+        "strategy_used": "budget_aware_optimized"
+      }
+    ],
+    "location_outcomes": [
+      {
+        "location_id": "ZONE_1_38536360",
+        "name": "K C General Hospital",
+        "priority": 9.5,
+        "initial_demand": 220,
+        "served_population": 110,
+        "unserved_population": 110,
+        "coverage_pct": 50.0,
+        "status": "PARTIALLY_SERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_2_38542913",
+        "name": "St Marthas Hospital",
+        "priority": 4.0,
+        "initial_demand": 140,
+        "served_population": 0,
+        "unserved_population": 140,
+        "coverage_pct": 0.0,
+        "status": "UNSERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_3_38750705",
+        "name": "Vydehi Superspeciality Hospital",
+        "priority": 8.5,
+        "initial_demand": 180,
+        "served_population": 180,
+        "unserved_population": 0,
+        "coverage_pct": 100.0,
+        "status": "FULLY_SERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_4_45185764",
+        "name": "Bhagwan Mahaveer Jain Hospital",
+        "priority": 3.0,
+        "initial_demand": 120,
+        "served_population": 0,
+        "unserved_population": 120,
+        "coverage_pct": 0.0,
+        "status": "UNSERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_5_45444044",
+        "name": "Bowring and Lady Curzon Hospitals",
+        "priority": 10.0,
+        "initial_demand": 260,
+        "served_population": 240,
+        "unserved_population": 20,
+        "coverage_pct": 92.31,
+        "status": "PARTIALLY_SERVED",
+        "is_synthetic_population": true
+      },
+      {
+        "location_id": "ZONE_6_52063534",
+        "name": "Sir Haji Ismail Gosha Sait Hospital",
+        "priority": 6.0,
+        "initial_demand": 160,
+        "served_population": 0,
+        "unserved_population": 160,
+        "coverage_pct": 0.0,
+        "status": "UNSERVED",
+        "is_synthetic_population": true
+      }
+    ]
+  },
+  "phase8_active_observation_plan": {
+    "total_candidate_roads_evaluated": 9521,
+    "recommended_observations_count": 8,
+    "strategy_changing_candidates_count": 8,
+    "recommendations": [
+      {
+        "road_id": "768544772",
+        "name": "",
+        "u": "7175110272",
+        "v": "10060540200",
+        "highway": "service",
+        "condition": "AT RISK",
+        "observation_priority_score": 0.7928,
+        "vulnerability_score": 0.55,
+        "uncertainty_score": 0.811,
+        "criticality_score": 0.9,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Active primary/alternative emergency rescue route segment",
+          "Direct road access node for hospital/emergency facility",
+          "Impact score (52.2) is near condition threshold (40/70)",
+          "Uncertain emergency access (Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road)"
+        ],
+        "rank": 1
+      },
+      {
+        "road_id": "1098777570",
+        "name": "",
+        "u": "12151027187",
+        "v": "10060540200",
+        "highway": "service",
+        "condition": "AT RISK",
+        "observation_priority_score": 0.7928,
+        "vulnerability_score": 0.55,
+        "uncertainty_score": 0.811,
+        "criticality_score": 0.9,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Active primary/alternative emergency rescue route segment",
+          "Direct road access node for hospital/emergency facility",
+          "Impact score (52.2) is near condition threshold (40/70)",
+          "Uncertain emergency access (Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road)"
+        ],
+        "rank": 2
+      },
+      {
+        "road_id": "1213217166",
+        "name": "",
+        "u": "11389362912",
+        "v": "456029899",
+        "highway": "service",
+        "condition": "AT RISK",
+        "observation_priority_score": 0.7303,
+        "vulnerability_score": 0.55,
+        "uncertainty_score": 0.811,
+        "criticality_score": 0.65,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Active primary/alternative emergency rescue route segment",
+          "Impact score (52.2) is near condition threshold (40/70)",
+          "Uncertain emergency access (Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road)"
+        ],
+        "rank": 3
+      },
+      {
+        "road_id": "1466955036",
+        "name": "",
+        "u": "13455267147",
+        "v": "13455267148",
+        "highway": "service",
+        "condition": "AT RISK",
+        "observation_priority_score": 0.7303,
+        "vulnerability_score": 0.55,
+        "uncertainty_score": 0.811,
+        "criticality_score": 0.65,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Active primary/alternative emergency rescue route segment",
+          "Impact score (52.2) is near condition threshold (40/70)",
+          "Uncertain emergency access (Restrictive access tag (private) may have physical gates/barriers; Unverified carriageway clearance on 'service' road)"
+        ],
+        "rank": 4
+      },
+      {
+        "road_id": "1312014813",
+        "name": "Old Mysuru Road Underpass",
+        "u": "12144112020",
+        "v": "12144112019",
+        "highway": "primary",
+        "condition": "BLOCKED",
+        "observation_priority_score": 0.73,
+        "vulnerability_score": 0.92,
+        "uncertainty_score": 0.4158,
+        "criticality_score": 0.6,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Major arterial corridor (primary)",
+          "Underpass/tunnel choke point",
+          "High infrastructure flood vulnerability (0.92)"
+        ],
+        "rank": 5
+      },
+      {
+        "road_id": "1190621348",
+        "name": "Old Mysuru Road Underpass",
+        "u": "3756218751",
+        "v": "9870839692",
+        "highway": "primary",
+        "condition": "BLOCKED",
+        "observation_priority_score": 0.73,
+        "vulnerability_score": 0.92,
+        "uncertainty_score": 0.4158,
+        "criticality_score": 0.6,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Major arterial corridor (primary)",
+          "Underpass/tunnel choke point",
+          "High infrastructure flood vulnerability (0.92)"
+        ],
+        "rank": 6
+      },
+      {
+        "road_id": "172952778",
+        "name": "",
+        "u": "1837823373",
+        "v": "860223975",
+        "highway": "primary",
+        "condition": "BLOCKED",
+        "observation_priority_score": 0.73,
+        "vulnerability_score": 0.92,
+        "uncertainty_score": 0.4158,
+        "criticality_score": 0.6,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Major arterial corridor (primary)",
+          "Underpass/tunnel choke point",
+          "High infrastructure flood vulnerability (0.92)"
+        ],
+        "rank": 7
+      },
+      {
+        "road_id": "173564837",
+        "name": "Lazar Road Underpass",
+        "u": "1808871254",
+        "v": "1808871261",
+        "highway": "primary",
+        "condition": "BLOCKED",
+        "observation_priority_score": 0.73,
+        "vulnerability_score": 0.92,
+        "uncertainty_score": 0.4158,
+        "criticality_score": 0.6,
+        "could_change_rescue_strategy": true,
+        "inspection_reasons": [
+          "Major arterial corridor (primary)",
+          "Underpass/tunnel choke point",
+          "High infrastructure flood vulnerability (0.92)"
+        ],
+        "rank": 8
+      }
+    ],
+    "prototype_disclaimer": "Explainable active-observation prioritization prototype for field teams or road sensors. Does not represent autonomous drone deployment."
+  }
+}

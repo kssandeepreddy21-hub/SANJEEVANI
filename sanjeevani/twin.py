@@ -386,3 +386,24 @@ def get_cascading_impacts_and_observations(all_horizons: dict[int, dict]) -> dic
         "cascading_df": pd.DataFrame(cascading_impacts),
         "observations_df": pd.DataFrame(observations),
     }
+
+
+# ---------------------------------------------------------------------------
+# RESQ-AI STAGE 2 ADDITIVE RE-EXPORTS: MEMBER 3 REAL BENGALURU OSM TWIN
+# Preserves all synthetic prototype functions above untouched while exposing
+# Member 3's documented real-network API on `sanjeevani.twin`.
+# ---------------------------------------------------------------------------
+from sanjeevani.twin_member3 import (  # noqa: E402, F401
+    simulate_rainfall,
+    summarize_rainfall_simulation,
+    predict_future_scenarios,
+    extract_corridor_subgraph,
+    estimate_edge_vulnerability,
+    annotate_graph_vulnerability,
+    summarize_graph_vulnerability,
+    extract_emergency_facilities,
+    simulate_road_failures,
+    analyze_cascading_failures,
+    snap_facilities_to_graph,
+)
+

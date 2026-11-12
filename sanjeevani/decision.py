@@ -440,3 +440,27 @@ def compare_all_strategies(
             }
         )
     return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------------------
+# RESQ-AI STAGE 2 ADDITIVE RE-EXPORTS: MEMBER 3 REAL BENGALURU OSM DECISION
+# Preserves all synthetic prototype routing/strategy functions above untouched
+# while exposing Member 3's documented real-network API on `sanjeevani.decision`.
+# ---------------------------------------------------------------------------
+from sanjeevani.decision_member3 import (  # noqa: E402, F401
+    DEFAULT_HIGHWAY_SPEED_KMH,
+    RESTRICTIVE_ACCESS_VALUES,
+    PROHIBITED_ACCESS_VALUES,
+    VERIFIED_EMERGENCY_VALUES,
+    VALID_STRATEGIES,
+    evaluate_emergency_access,
+    estimate_edge_travel_time_sec,
+    _select_best_parallel_edge,
+    find_shortest_safe_route,
+    find_alternative_route,
+    optimize_multi_destination_routes,
+    allocate_emergency_resources,
+    compare_rescue_strategies,
+    plan_active_observations,
+)
+

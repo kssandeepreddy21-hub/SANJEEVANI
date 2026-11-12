@@ -20,3 +20,9 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Large RESQ-AI / OSM geographical data files
+*.graphml
+*.pbf
+*.gpkg
+*.pkl
