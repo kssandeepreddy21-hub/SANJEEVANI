@@ -1,16 +1,17 @@
 """
 sanjeevani.evidence
 -------------------
-Core Emergency Report Processing and Evidence Intelligence module for SANJEEVANI (Member 2).
+Core Emergency Report Processing and Evidence Intelligence module for RESQ-AI / SANJEEVANI (Member 2).
 
 Key Features:
 - Rule-based entity extraction (Disaster Type, Urgency, Affected Count, Location, Incident Summary).
 - Dynamic unique Report ID generation (replaces hardcoded IDs).
 - Automatic ISO 8601 report timestamp generation.
 - Photographic evidence inspection and perceptual duplicate matching.
+- Independent textual and photographic corroboration analysis.
 - Multi-factor explainable confidence scoring.
 - Life-safety-first triage prioritization.
-- Seamless compatibility with Member 4 (Streamlit) and other modules.
+- Seamless compatibility with Member 3 (Rescue Optimization) and Member 4 (Streamlit).
 """
 
 from datetime import datetime, timezone
@@ -26,6 +27,7 @@ from .confidence import (
     check_corroboration,
     evaluate_confidence,
     calculate_priority,
+    is_anonymous_source
 )
 from .storage import (
     save_report_json,
@@ -194,7 +196,7 @@ def detect_disaster_type(text: Optional[str]) -> str:
 
     for disaster, keywords in disaster_keywords.items():
         for keyword in keywords:
-            # Word boundary check for short words to prevent false positives
+            # Word boundary check to prevent false substring positives
             if re.search(rf"\b{re.escape(keyword)}\b", text_lower):
                 return disaster
 
@@ -248,7 +250,8 @@ def detect_urgency(text: Optional[str]) -> str:
         "submerged",
         "power cut",
         "power outage",
-        "rising fast"
+        "rising fast",
+        "rising rapidly"
     ]
 
     low_keywords = [
@@ -331,7 +334,6 @@ def extract_incident_summary(text: Optional[str], disaster_type: str = "Unknown"
         return "No incident details provided."
 
     clean_text = text.strip()
-    # If text has multiple sentences, take the first informative sentence
     sentences = re.split(r"[.!?]\s*", clean_text)
     if sentences and sentences[0]:
         return sentences[0].strip()
@@ -344,7 +346,7 @@ def extract_incident_summary(text: Optional[str], disaster_type: str = "Unknown"
 def process_emergency_report(
     raw_text: str,
     image_path: Optional[str] = None,
-    source_id: str = "anonymous_citizen",
+    source_id: Optional[str] = "anonymous_citizen",
     source_type: str = "citizen",
     report_time: Optional[str] = None,
     report_id: Optional[str] = None,
@@ -361,9 +363,9 @@ def process_emergency_report(
     Combines:
     1. Text analysis (Disaster type, location, urgency, affected count, incident summary).
     2. Image analysis (Validation, SHA-256, Perceptual Hash, format, dimensions).
-    3. Perceptual duplicate detection (Hamming distance comparison).
+    3. Perceptual duplicate detection (Hamming distance comparison without self-match).
     4. Report freshness calculation.
-    5. Independent corroboration detection.
+    5. Independent corroboration detection (distinguishing textual from photographic).
     6. Contradiction identification against historical records.
     7. Multi-factor explainable confidence scoring.
     8. Life-safety-first triage prioritization.
@@ -378,16 +380,20 @@ def process_emergency_report(
     # 2. Timestamp (ISO 8601)
     actual_report_time = report_time or datetime.now().isoformat(timespec="seconds")
 
-    # 3. Text Entity Extraction
+    # 3. Standardize Source Information
+    actual_source_id = source_id if source_id is not None else "anonymous_citizen"
+    actual_source_type = source_type or "citizen"
+
+    # 4. Text Entity Extraction
     location = extract_location(raw_text)
     disaster_type = detect_disaster_type(raw_text)
     urgency = detect_urgency(raw_text)
     affected = extract_affected_count(raw_text)
     incident = extract_incident_summary(raw_text, disaster_type=disaster_type)
 
-    # 4. Image Analysis & Perceptual Hashing
+    # 5. Image Analysis & Perceptual Hashing
     img_data = analyze_image(image_path)
-    duplicate_info = {
+    duplicate_info: Dict[str, Any] = {
         "is_duplicate": False,
         "duplicate_type": None,
         "matched_report_id": None,
@@ -396,11 +402,13 @@ def process_emergency_report(
     }
 
     if img_data["is_valid"] and registry is not None:
+        # Check duplicate first, excluding self to prevent false self-matches
         duplicate_info = registry.check_duplicate(
             sha256_hash=img_data["image_sha256"],
-            phash_str=img_data["perceptual_hash"]
+            phash_str=img_data["perceptual_hash"],
+            exclude_report_id=actual_report_id
         )
-        # Register this image into registry for future comparisons
+        # Register image into registry for subsequent reports
         registry.register(
             report_id=actual_report_id,
             sha256_hash=img_data["image_sha256"],
@@ -408,26 +416,42 @@ def process_emergency_report(
             file_name=img_data["file_name"]
         )
 
-    # 5. Temporal Freshness
+    # 6. Temporal Freshness
     freshness = calculate_report_freshness(actual_report_time)
 
-    # 6. Historical Checks: Corroboration & Contradictions
+    # 7. Interim Report Model for Comparison
     interim_report = {
         "report_id": actual_report_id,
         "raw_text": raw_text,
         "location": location,
         "disaster_type": disaster_type,
-        "source_id": source_id,
-        "source_type": source_type,
+        "source_id": actual_source_id,
+        "source_type": actual_source_type,
         "affected": affected,
         "urgency": urgency,
-        "report_time": actual_report_time
+        "report_time": actual_report_time,
+        "image_available": img_data["image_available"],
+        "image_valid": img_data["is_valid"],
+        "image_sha256": img_data.get("image_sha256"),
+        "perceptual_hash": img_data.get("perceptual_hash"),
+        "evidence": {
+            "image_available": img_data["image_available"],
+            "image_valid": img_data["is_valid"],
+            "image_sha256": img_data.get("image_sha256"),
+            "perceptual_hash": img_data.get("perceptual_hash")
+        }
     }
 
+    # 8. Historical Checks: Corroboration & Contradictions
     contradictions = detect_contradictions(interim_report, historical_reports)
-    corroboration = check_corroboration(interim_report, historical_reports)
+    corroboration = check_corroboration(
+        current_report=interim_report,
+        historical_reports=historical_reports,
+        current_image_analysis=img_data,
+        duplicate_info=duplicate_info
+    )
 
-    # 7. Confidence Scoring
+    # 9. Confidence Scoring
     confidence = evaluate_confidence(
         report=interim_report,
         image_analysis=img_data,
@@ -437,14 +461,14 @@ def process_emergency_report(
         contradictions=contradictions
     )
 
-    # 8. Report Prioritization
+    # 10. Report Prioritization (Life-Safety-First Guarantee)
     priority_info = calculate_priority(
         report=interim_report,
         confidence=confidence,
         contradictions=contradictions
     )
 
-    # 9. Build Final Structured Output (JSON-compatible)
+    # 11. Build Final Structured Output (100% JSON-serializable)
     final_output = {
         "report_id": actual_report_id,
         "raw_text": raw_text,
@@ -453,8 +477,8 @@ def process_emergency_report(
         "incident": incident,
         "urgency": urgency,
         "affected": affected,
-        "source_id": source_id,
-        "source_type": source_type,
+        "source_id": actual_source_id,
+        "source_type": actual_source_type,
         "report_time": actual_report_time,
         "freshness": freshness,
         "evidence": {
@@ -504,15 +528,14 @@ def process_emergency_report(
     return final_output
 
 
-# CLI INTERACTIVE RECEIVE FUNCTION (Maintains backward compatibility with user's original file)
+# CLI INTERACTIVE RECEIVE FUNCTION (Maintains backward compatibility)
 
 def receive_report() -> Dict[str, Any]:
     """
     Interactive command-line function to receive, parse, and analyze an emergency report.
-    Keeps the user's initial workflow running with enhanced capabilities.
     """
     print("===================================")
-    print("       SANJEEVANI EMERGENCY")
+    print("       RESQ-AI / SANJEEVANI")
     print("    REPORT & EVIDENCE SYSTEM")
     print("===================================")
 
@@ -527,8 +550,6 @@ def receive_report() -> Dict[str, Any]:
 
     return report
 
-
-# MAIN PROGRAM EXECUTION
 
 if __name__ == "__main__":
     emergency_report = receive_report()

@@ -9,7 +9,7 @@
 
 ## 1. Quick Integration Overview
 
-Member 2 provides the frontline disaster report ingestion, NLP entity extraction, photographic evidence validation, explainable confidence scoring, and triage prioritization engine for **SANJEEVANI**.
+Member 2 provides the frontline disaster report ingestion, NLP entity extraction, photographic evidence validation, explainable confidence scoring, and life-safety triage prioritization engine for **SANJEEVANI** / **RESQ-AI**.
 
 All outputs are native, JSON-compatible Python dictionaries designed for immediate consumption by Streamlit (Member 4) and rescue routing algorithms (Member 3).
 
@@ -35,7 +35,7 @@ The primary single-entry-point function for the entire evidence intelligence pip
 def process_emergency_report(
     raw_text: str,
     image_path: Optional[str] = None,
-    source_id: str = "anonymous_citizen",
+    source_id: Optional[str] = "anonymous_citizen",
     source_type: str = "citizen",
     report_time: Optional[str] = None,
     report_id: Optional[str] = None,
@@ -53,7 +53,7 @@ def process_emergency_report(
 |---|---|---|---|
 | `raw_text` | `str` | *Required* | Raw message submitted by citizen or responder. |
 | `image_path` | `str` or `None` | `None` | Local filesystem path to the uploaded image. |
-| `source_id` | `str` | `"anonymous_citizen"` | Unique identifier for reporting user (e.g. phone, username). |
+| `source_id` | `str` or `None` | `"anonymous_citizen"` | Unique identifier for reporting user (e.g. phone, username). |
 | `source_type` | `str` | `"citizen"` | Source trust tier: `"official"`, `"first_responder"`, `"registered_citizen"`, `"citizen"`. |
 | `report_time` | `str` or `None` | `None` | ISO 8601 timestamp. If `None`, defaults to current time. |
 | `report_id` | `str` or `None` | `None` | Unique ID. If `None`, auto-generates (`R001`, `R002`, etc.). |
@@ -80,9 +80,9 @@ The output is a 100% JSON-compatible Python dictionary:
     "count": 15,
     "unit": "people"
   },
-  "source_id": "anonymous_citizen",
+  "source_id": "citizen_alice",
   "source_type": "citizen",
-  "report_time": "2026-11-12T09:17:57",
+  "report_time": "2026-11-12T11:10:25",
   "freshness": {
     "age_minutes": 0.0,
     "age_hours": 0.0,
@@ -99,7 +99,8 @@ The output is a 100% JSON-compatible Python dictionary:
     "dimensions": {
       "width": 320,
       "height": 240,
-      "channels": 3
+      "channels": 3,
+      "cv2_shape": [240, 320, 3]
     },
     "format": "JPEG",
     "file_size_kb": 12.4,
@@ -114,6 +115,11 @@ The output is a 100% JSON-compatible Python dictionary:
     "is_corroborated": false,
     "corroborating_report_ids": [],
     "duplicate_chatter_ids": [],
+    "independent_textual_reports": [],
+    "independent_image_reports": [],
+    "duplicate_image_report_ids": [],
+    "visually_similar_report_ids": [],
+    "unknown_independence_report_ids": [],
     "explanation": "No corroborating reports found."
   },
   "contradictions": [],
@@ -145,7 +151,36 @@ The output is a 100% JSON-compatible Python dictionary:
 
 ---
 
-## 4. Instructions for Member 4 (Streamlit Dashboard)
+## 4. Key Architectural Enhancements & Fixes
+
+### A. Independent Textual vs Photographic Corroboration
+The system strictly distinguishes between:
+1. **Independent Textual Corroboration (`independent_textual_reports`):**
+   Different identified sources reporting the same disaster at the same location.
+2. **Independent Photographic Corroboration (`independent_image_reports`):**
+   Genuinely distinct photographs verifying the scene.
+3. **Duplicate Images (`duplicate_image_report_ids`):**
+   Same SHA-256 binary hash across multiple reports. Re-sharing an image never increases photographic corroboration.
+4. **Visually Similar Images (`visually_similar_report_ids`):**
+   pHash Hamming distance $\le 10$. Re-compressed, cropped, or filtered versions of the same photo are flagged for human review.
+
+### B. Anonymous Source Handling
+- Identified sources (officials, first responders, registered citizens) are eligible for independent corroboration.
+- Anonymous reports (`source_id: None` or `"anonymous_citizen"`) are categorized under `unknown_independence_report_ids`.
+- The system never assumes independence between multiple anonymous messages, avoiding viral bot or copied rumor inflation.
+
+### C. False Contradiction Prevention
+- Distinguishes **ONGOING**, **RESOLVED**, and **NO_DISASTER** (all clear) states.
+- Statements like *"The fire is extinguished and everyone is safe"* are identified as `RESOLVED` and do not generate false contradiction alerts when compared with *"Area is clear, no fire"*.
+- Genuine contradictions (e.g. *"Severe flood rising"* vs *"No flood, completely dry"*) are flagged for human verification without discarding either report.
+
+### D. Life-Safety-First Prioritization Guarantee
+- Urgent life-threat cues (`trapped`, `drowning`, `injured`, `buried`, `stranded`) trigger **CRITICAL priority unconditionally**.
+- Low evidence confidence, duplicate photographs, or contradictory reports **never** downgrade life-safety priority.
+
+---
+
+## 5. Instructions for Member 4 (Streamlit Dashboard)
 
 Member 4 can integrate Member 2 directly into the Streamlit user interface in just a few lines:
 
@@ -161,101 +196,74 @@ from sanjeevani import (
 if "registry" not in st.session_state:
     st.session_state.registry = PersistentImageRegistry()
 
-# 2. UI Input Widgets
-st.header("Submit Emergency Report")
-report_text = st.text_area("Emergency Incident Details", placeholder="e.g. Severe flooding near Zone Z2. 10 people trapped.")
-uploaded_photo = st.file_uploader("Upload Incident Photo (Optional)", type=["jpg", "png", "jpeg", "webp"])
-source_role = st.selectbox("Reporter Role", ["citizen", "registered_citizen", "first_responder", "official"])
+# 2. Upload and input form
+st.header("🚨 Submit Emergency Report")
+user_text = st.text_area("Emergency Incident Message:")
+uploaded_file = st.file_uploader("Upload Incident Photo (Optional):", type=["jpg", "png", "jpeg"])
 
-if st.button("Process & Triage Emergency"):
-    # Save uploaded file temporarily if provided
-    img_path = None
-    if uploaded_photo:
-        img_path = f"data/images/{uploaded_photo.name}"
-        with open(img_path, "wb") as f:
-            f.write(uploaded_photo.getbuffer())
+if st.button("Process & Triage Report"):
+    temp_image_path = None
+    if uploaded_file:
+        temp_image_path = f"data/images/{uploaded_file.name}"
+        with open(temp_image_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
 
-    # Load previous reports for automated contradiction and corroboration checks
+    # Load history for cross-validation
     history = load_all_historical_reports()
 
-    # Call Member 2 processing pipeline
+    # Process through pipeline
     result = process_emergency_report(
-        raw_text=report_text,
-        image_path=img_path,
-        source_type=source_role,
+        raw_text=user_text,
+        image_path=temp_image_path,
+        source_id="citizen_web_user",
+        source_type="registered_citizen",
         registry=st.session_state.registry,
         historical_reports=history,
         save_record=True,
         archive_image=True
     )
 
-    # 3. Present Member 2 Results on Streamlit
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Priority", result["priority"])
-    col2.metric("Confidence", f"{result['confidence']['score']}%")
-    col3.metric("Disaster", result["disaster_type"])
-    col4.metric("Location", result["location"] or "Unknown")
-
+    # Display Triage Badge
     if result["priority"] == "CRITICAL":
-        st.error(f"CRITICAL TRIAGE: {', '.join(result['priority_reasons'])}")
+        st.error(f"🚨 TRIAGE PRIORITY: {result['priority']}")
+    elif result["priority"] == "HIGH":
+        st.warning(f"⚠️ TRIAGE PRIORITY: {result['priority']}")
+    else:
+        st.info(f"ℹ️ TRIAGE PRIORITY: {result['priority']}")
 
-    if result["evidence"]["possible_duplicate"]:
-        st.warning(f"DUPLICATE IMAGE WARNING: {result['evidence']['duplicate_explanation']}")
-
-    if result["contradictions"]:
-        for c in result["contradictions"]:
-            st.warning(f"CONTRADICTION ALERT: {c['explanation']}")
-
-    # Verification breakdown accordion
-    with st.expander("Explainable Confidence Breakdown"):
-        st.write("**Status:**", result["confidence"]["verification_status"])
-        st.write("**Supporting Factors:**", result["confidence"]["supporting_evidence"])
-        st.write("**Penalties/Against:**", result["confidence"]["evidence_against"])
-        st.write("**Missing Info:**", result["confidence"]["missing_information"])
+    st.write(f"Confidence Score: {result['confidence']['score']}% ({result['confidence']['verification_status']})")
+    st.json(result)
 ```
 
 ---
 
-## 5. Instructions for Member 3 (Disaster Simulation & Rescue Optimization)
+## 6. Instructions for Member 3 (Simulation & Rescue Optimization)
 
-Member 3's rescue route optimization algorithms can extract verified target zones, casualty counts, and life-safety priority flags directly from Member 2's output:
+Member 3 can consume Member 2's output directly to dynamically update node weights, flood hazards, and rescue routing:
 
 ```python
 from sanjeevani import load_all_historical_reports
 
-def get_high_priority_rescue_targets():
-    """
-    Extracts high-priority rescue locations and casualty demands for Member 3's
-    rescue optimization routing algorithms.
-    """
-    all_reports = load_all_historical_reports()
-    rescue_targets = []
+def get_active_rescue_demands():
+    reports = load_all_historical_reports()
+    critical_missions = []
 
-    for rep in all_reports:
-        # Filter for active emergencies needing immediate response
-        if rep.get("priority") in ("CRITICAL", "HIGH"):
-            target = {
-                "report_id": rep["report_id"],
-                "location": rep["location"],
-                "disaster_type": rep["disaster_type"],
-                "urgency": rep["urgency"],
-                "affected_people": (rep.get("affected") or {}).get("count") or 1,
-                "priority": rep["priority"],
-                "is_contradicted": len(rep.get("contradictions", [])) > 0,
-                "timestamp": rep["report_time"]
-            }
-            rescue_targets.append(target)
+    for r in reports:
+        # Filter for active life threats
+        if r.get("priority") in ("CRITICAL", "HIGH"):
+            loc = r.get("location")
+            affected = (r.get("affected") or {}).get("count") or 1
+            disaster = r.get("disaster_type")
 
-    return rescue_targets
+            critical_missions.append({
+                "report_id": r["report_id"],
+                "target_node": loc,
+                "disaster_type": disaster,
+                "victims_count": affected,
+                "priority": r["priority"],
+                "confidence": r["confidence"]["score"],
+                "verified": r["confidence"]["verification_status"] == "Verified"
+            })
+
+    return critical_missions
 ```
-
----
-
-## 6. Safety & Verification Guarantees
-
-1. **Life-Safety Guarantee:**
-   A report with trapped people or life-threatening keywords will **always receive CRITICAL priority**, even if submitted anonymously with no photograph. Life rescue takes precedence over documentation certainty.
-2. **Explainable Deduplication:**
-   Exact file duplicates (matching SHA-256) are strictly distinguished from perceptual duplicates (matching pHash with Hamming distance $\le 10$).
-3. **No Automatic Fake Dismissal:**
-   Reused images or contradictory statements are flagged for human operator verification; they are never deleted or discarded automatically.

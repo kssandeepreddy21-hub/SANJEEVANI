@@ -35,7 +35,9 @@ from .confidence import (
     detect_contradictions,
     check_corroboration,
     evaluate_confidence,
-    calculate_priority
+    calculate_priority,
+    is_anonymous_source,
+    classify_report_status
 )
 
 from .storage import (
@@ -67,6 +69,8 @@ __all__ = [
     "check_corroboration",
     "evaluate_confidence",
     "calculate_priority",
+    "is_anonymous_source",
+    "classify_report_status",
     "ensure_directories",
     "save_report_json",
     "load_report_json",

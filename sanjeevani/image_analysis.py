@@ -1,7 +1,7 @@
 """
 sanjeevani.image_analysis
 -------------------------
-Image verification and perceptual duplicate detection module for SANJEEVANI.
+Image verification and perceptual duplicate detection module for RESQ-AI / SANJEEVANI (Member 2).
 
 Technical Concepts Explained:
 1. Cryptographic Hash (SHA-256):
@@ -21,11 +21,11 @@ Technical Concepts Explained:
    - Distance <= 10: Visually very similar (likely same scene or cropped/compressed version).
    - Distance > 10: Visually distinct images.
 
-Important Ethical Note:
-Image processing extracts technical metadata and visual fingerprints.
-It does NOT prove whether a photograph is genuine, staged, or outdated.
+Important Scientific & Ethical Disclaimer:
+Image analysis extracts technical metadata and visual fingerprints.
+It does NOT prove whether a photograph is genuine, authentic, or staged.
 Visual similarity triggers a human verification alert; it never automatically
-discards or classifies an image as fake.
+discards an emergency report or classifies an image as fake.
 """
 
 import os
@@ -61,7 +61,7 @@ def compute_file_sha256(file_path: str) -> str:
 
 def compute_perceptual_hash(image_input) -> str:
     """
-    Generates a perceptual hash (pHash) using Discrete Cosine Transform.
+    Generates a perceptual hash (pHash) using Discrete Cosine Transform (DCT).
 
     Args:
         image_input: Either a file path (str) or an open PIL Image object.
@@ -199,9 +199,9 @@ def analyze_image(image_path: Optional[str]) -> Dict[str, Any]:
         cv_ch = cv_channels[0] if cv_channels else 1
 
         result["dimensions"] = {
-            "width": width,
-            "height": height,
-            "channels": channels,
+            "width": int(width),
+            "height": int(height),
+            "channels": int(channels),
             "cv2_shape": [int(cv_height), int(cv_width), int(cv_ch)]
         }
     except Exception as e:
@@ -222,6 +222,7 @@ class ImageRegistry:
     1. Exact Duplicate: Same SHA-256 hash. The exact same digital file has been submitted before.
     2. Visually Similar: Hamming distance <= threshold. Different file or compression, but depicting
        the same visual structure. Flagged for human review.
+    3. Self-Match Prevention: Excludes the current report ID during checks to prevent false self-matching.
     """
 
     def __init__(self, similarity_threshold: int = SIMILARITY_THRESHOLD_DEFAULT):
@@ -229,12 +230,24 @@ class ImageRegistry:
         # Internal list of registered image records
         self._records: List[Dict[str, Any]] = []
 
-    def register(self, report_id: str, sha256_hash: str, phash_str: str, file_name: Optional[str] = None) -> None:
+    def register(
+        self,
+        report_id: str,
+        sha256_hash: str,
+        phash_str: str,
+        file_name: Optional[str] = None
+    ) -> None:
         """
         Stores an image record in the registry for future comparison.
+        Prevents duplicate self-registration of the exact same report and hash.
         """
         if not sha256_hash or not phash_str:
             return
+
+        # Avoid registering identical record for the exact same report
+        for record in self._records:
+            if record.get("report_id") == report_id and record.get("sha256") == sha256_hash:
+                return
 
         self._records.append({
             "report_id": report_id,
@@ -243,9 +256,19 @@ class ImageRegistry:
             "file_name": file_name
         })
 
-    def check_duplicate(self, sha256_hash: Optional[str], phash_str: Optional[str]) -> Dict[str, Any]:
+    def check_duplicate(
+        self,
+        sha256_hash: Optional[str],
+        phash_str: Optional[str],
+        exclude_report_id: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Compares an image's hashes against all previously registered images.
+
+        Args:
+            sha256_hash: Cryptographic hash of image to compare.
+            phash_str: Perceptual hash string of image to compare.
+            exclude_report_id: Optional report ID to exclude from matching (prevents self-match).
 
         Returns:
             Dict[str, Any]:
@@ -268,7 +291,10 @@ class ImageRegistry:
 
         # Step 1: Check for EXACT binary file duplicate (SHA-256 match)
         for record in self._records:
-            if record["sha256"] == sha256_hash:
+            if exclude_report_id and record.get("report_id") == exclude_report_id:
+                continue
+
+            if record.get("sha256") == sha256_hash:
                 result["is_duplicate"] = True
                 result["duplicate_type"] = "EXACT"
                 result["matched_report_id"] = record["report_id"]
@@ -284,6 +310,9 @@ class ImageRegistry:
         closest_match = None
 
         for record in self._records:
+            if exclude_report_id and record.get("report_id") == exclude_report_id:
+                continue
+
             try:
                 dist = compute_hamming_distance(phash_str, record["phash"])
                 if dist < min_distance:
@@ -296,7 +325,7 @@ class ImageRegistry:
             result["is_duplicate"] = True
             result["duplicate_type"] = "VISUALLY_SIMILAR"
             result["matched_report_id"] = closest_match["report_id"]
-            result["hamming_distance"] = min_distance
+            result["hamming_distance"] = int(min_distance)
             result["explanation"] = (
                 f"Visually similar photograph detected (Hamming distance {min_distance} <= "
                 f"threshold {self.similarity_threshold}) matching report {closest_match['report_id']}. "
@@ -305,7 +334,7 @@ class ImageRegistry:
             return result
 
         # No match found
-        result["hamming_distance"] = min_distance if min_distance != 999 else None
+        result["hamming_distance"] = int(min_distance) if min_distance != 999 else None
         return result
 
     def count(self) -> int:
