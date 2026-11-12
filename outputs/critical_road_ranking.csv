@@ -1,0 +1,21 @@
+road_id,road_name,road_type,failure_probability,flood_sensitivity,edge_betweenness,is_structural_bridge,is_graph_bridge,population_no_hospital_access,population_no_shelter_access,unique_population_losing_access,population_with_delayed_hospital_access,max_hospital_delay_min,access_loss_risk_score,delay_impact_score,infrastructure_vulnerability_score,comprehensive_criticality_score,criticality_level,explanation
+RD04,Hilltop Access Road,local,0.1,0.1,0.125,False,True,9500,9500,9500,0,0.0,1.0,0.0,0.2881,0.7717,CRITICAL,"Topological single point of failure (isolates 9,500 residents with 0 hospital/shelter access)"
+RD10,Downtown Hospital Expressway,highway,0.15,0.15,0.1083,False,False,0,0,0,42000,14.9,0.0,0.997,0.1577,0.7522,CRITICAL,"Critical medical lifeline (closure causes hospital detours up to +14.9m for 42,000 residents)"
+RD11,Grand River Bridge,bridge,0.8,0.9,0.35,True,False,0,0,0,0,0.0,0.0,0.0,0.7238,0.5308,HIGH,Physical bridge over waterway vulnerable to flood inundation; Major transit artery (centrality: 0.3500); Severe physical failure risk (80%)
+RD13,Apex Hospital Spur,local,0.2,0.25,0.1,False,False,0,0,0,20500,13.9,0.0,0.6855,0.195,0.5287,HIGH,"Critical medical lifeline (closure causes hospital detours up to +13.9m for 20,500 residents)"
+RD19,South Bank Causeway Bridge,bridge,0.85,0.95,0.025,True,False,0,0,0,8000,3.5,0.0,0.2098,0.5506,0.4317,HIGH,"Causes hospital access delay up to +3.5m for 8,000 residents; Physical bridge over waterway vulnerable to flood inundation; Severe physical failure risk (85%)"
+RD01,Riverside South Link,arterial,0.65,0.8,0.1667,False,False,0,0,0,14000,4.0,0.0,0.3033,0.5317,0.4304,HIGH,"Causes hospital access delay up to +4.0m for 14,000 residents"
+RD14,East Crossway Bridge,bridge,0.75,0.85,0.175,True,False,0,0,0,0,0.0,0.0,0.0,0.5844,0.4286,HIGH,Physical bridge over waterway vulnerable to flood inundation; Severe physical failure risk (75%)
+RD02,West Embankment Road,local,0.7,0.85,0.1083,False,False,0,0,0,0,0.0,0.0,0.0,0.5252,0.3851,MODERATE,Severe physical failure risk (70%)
+RD20,Industrial Link to Trauma Center,arterial,0.2,0.2,0.0583,False,False,0,0,0,18000,8.0,0.0,0.4757,0.1564,0.3697,MODERATE,"Causes hospital access delay up to +8.0m for 18,000 residents"
+RD12,Old Town Riverway,arterial,0.55,0.7,0.1667,False,False,0,0,0,0,0.0,0.0,0.0,0.4717,0.3459,MODERATE,Standard transit road with adequate alternative routing
+RD18,Lakeside Boulevard,arterial,0.6,0.75,0.1,False,False,0,0,0,0,0.0,0.0,0.0,0.46,0.3373,MODERATE,Standard transit road with adequate alternative routing
+RD09,Downtown Spine Avenue,arterial,0.2,0.25,0.15,False,False,0,0,0,14000,4.0,0.0,0.3033,0.2263,0.2526,MODERATE,"Causes hospital access delay up to +4.0m for 14,000 residents"
+RD08,Central Station Link,local,0.1,0.2,0.2083,False,False,0,0,0,14000,4.0,0.0,0.3033,0.2152,0.2511,MODERATE,"Causes hospital access delay up to +4.0m for 14,000 residents; Major transit artery (centrality: 0.2083)"
+RD06,Hospital North Link,arterial,0.15,0.2,0.1083,False,False,0,0,0,9500,5.5,0.0,0.2894,0.1702,0.2349,LOW,"Causes hospital access delay up to +5.5m for 9,500 residents"
+RD05,North Stadium Way,arterial,0.12,0.15,0.1167,False,False,0,0,0,9500,5.5,0.0,0.2894,0.1524,0.2325,LOW,"Causes hospital access delay up to +5.5m for 9,500 residents"
+RD07,North-Central Corridor,arterial,0.25,0.3,0.1833,False,False,0,0,0,0,0.0,0.0,0.0,0.2771,0.2032,LOW,Standard transit road with adequate alternative routing
+RD15,East End Boulevard,arterial,0.25,0.3,0.1333,False,False,0,0,0,0,0.0,0.0,0.0,0.2458,0.1803,LOW,Standard transit road with adequate alternative routing
+RD17,Civic Overpass,highway,0.2,0.25,0.125,False,False,0,0,0,0,0.0,0.0,0.0,0.2106,0.1544,LOW,Standard transit road with adequate alternative routing
+RD16,East Shelter Approach,local,0.18,0.2,0.1333,False,False,0,0,0,0,0.0,0.0,0.0,0.1963,0.144,LOW,Standard transit road with adequate alternative routing
+RD03,West Bypass Highway,highway,0.15,0.2,0.0667,False,False,0,0,0,0,0.0,0.0,0.0,0.1442,0.1057,LOW,Standard transit road with adequate alternative routing

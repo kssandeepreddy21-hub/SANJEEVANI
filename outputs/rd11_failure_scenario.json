@@ -1,0 +1,193 @@
+{
+  "scenario_id": "SCENARIO_SINGLE_FAIL_RD11",
+  "failed_road_ids": [
+    "RD11"
+  ],
+  "failed_road_names": [
+    "Grand River Bridge"
+  ],
+  "original_node_count": 16,
+  "original_edge_count": 20,
+  "scenario_node_count": 16,
+  "scenario_edge_count": 19,
+  "connected_component_count": 1,
+  "disconnected_residential_zones": [],
+  "no_hospital_access_zones": [],
+  "no_shelter_access_zones": [],
+  "isolated_hospitals": [],
+  "isolated_shelters": [],
+  "isolated_emergency_stations": [],
+  "is_original_graph_unchanged": true,
+  "zone_accessibility_details": {
+    "R1": {
+      "name": "Riverside Colony",
+      "population": 14000,
+      "degree": 2,
+      "has_hospital_access": true,
+      "nearest_hospital": "H1",
+      "hospital_travel_time_min": 13.5,
+      "reachable_hospital_count": 2,
+      "has_shelter_access": true,
+      "nearest_shelter": "S1",
+      "shelter_travel_time_min": 12.5,
+      "reachable_shelter_count": 2
+    },
+    "R2": {
+      "name": "Downtown Heights",
+      "population": 28000,
+      "degree": 2,
+      "has_hospital_access": true,
+      "nearest_hospital": "H1",
+      "hospital_travel_time_min": 3.5,
+      "reachable_hospital_count": 2,
+      "has_shelter_access": true,
+      "nearest_shelter": "S1",
+      "shelter_travel_time_min": 8.5,
+      "reachable_shelter_count": 2
+    },
+    "R3": {
+      "name": "Hilltop Suburb",
+      "population": 9500,
+      "degree": 1,
+      "has_hospital_access": true,
+      "nearest_hospital": "H1",
+      "hospital_travel_time_min": 12.6,
+      "reachable_hospital_count": 2,
+      "has_shelter_access": true,
+      "nearest_shelter": "S1",
+      "shelter_travel_time_min": 7.6,
+      "reachable_shelter_count": 2
+    },
+    "R4": {
+      "name": "East End Ward",
+      "population": 18000,
+      "degree": 2,
+      "has_hospital_access": true,
+      "nearest_hospital": "H2",
+      "hospital_travel_time_min": 5.0,
+      "reachable_hospital_count": 2,
+      "has_shelter_access": true,
+      "nearest_shelter": "S2",
+      "shelter_travel_time_min": 7.5,
+      "reachable_shelter_count": 2
+    },
+    "R5": {
+      "name": "Old Town Quarter",
+      "population": 12500,
+      "degree": 3,
+      "has_hospital_access": true,
+      "nearest_hospital": "H2",
+      "hospital_travel_time_min": 4.0,
+      "reachable_hospital_count": 2,
+      "has_shelter_access": true,
+      "nearest_shelter": "S2",
+      "shelter_travel_time_min": 14.0,
+      "reachable_shelter_count": 2
+    },
+    "R6": {
+      "name": "Lakeside Enclave",
+      "population": 8000,
+      "degree": 2,
+      "has_hospital_access": true,
+      "nearest_hospital": "H2",
+      "hospital_travel_time_min": 11.0,
+      "reachable_hospital_count": 2,
+      "has_shelter_access": true,
+      "nearest_shelter": "S1",
+      "shelter_travel_time_min": 16.0,
+      "reachable_shelter_count": 2
+    }
+  },
+  "human_impact": {
+    "scenario_id": "SCENARIO_SINGLE_FAIL_RD11",
+    "failed_road_ids": [
+      "RD11"
+    ],
+    "failure_probability": 0.8,
+    "zones_no_hospital_access": [],
+    "population_no_hospital_access": 0,
+    "zones_no_shelter_access": [],
+    "population_no_shelter_access": 0,
+    "unique_zones_lost_critical_service": [],
+    "unique_population_lost_critical_service": 0,
+    "population_with_delayed_hospital_access": 0,
+    "population_with_delayed_shelter_access": 0,
+    "human_impact_population": 0,
+    "risk_score": 0.0,
+    "scientific_disclaimer": "Prototype human-impact score for decision-support testing only. Not a calibrated real-world disaster risk model."
+  },
+  "delays_by_zone": {
+    "R1": {
+      "name": "Riverside Colony",
+      "population": 14000,
+      "has_hospital_access": true,
+      "hospital_baseline_min": 13.5,
+      "hospital_scenario_min": 13.5,
+      "hospital_delay_min": 0.0,
+      "has_shelter_access": true,
+      "shelter_baseline_min": 12.5,
+      "shelter_scenario_min": 12.5,
+      "shelter_delay_min": 0.0
+    },
+    "R2": {
+      "name": "Downtown Heights",
+      "population": 28000,
+      "has_hospital_access": true,
+      "hospital_baseline_min": 3.5,
+      "hospital_scenario_min": 3.5,
+      "hospital_delay_min": 0.0,
+      "has_shelter_access": true,
+      "shelter_baseline_min": 8.5,
+      "shelter_scenario_min": 8.5,
+      "shelter_delay_min": 0.0
+    },
+    "R3": {
+      "name": "Hilltop Suburb",
+      "population": 9500,
+      "has_hospital_access": true,
+      "hospital_baseline_min": 12.6,
+      "hospital_scenario_min": 12.6,
+      "hospital_delay_min": 0.0,
+      "has_shelter_access": true,
+      "shelter_baseline_min": 7.6,
+      "shelter_scenario_min": 7.6,
+      "shelter_delay_min": 0.0
+    },
+    "R4": {
+      "name": "East End Ward",
+      "population": 18000,
+      "has_hospital_access": true,
+      "hospital_baseline_min": 5.0,
+      "hospital_scenario_min": 5.0,
+      "hospital_delay_min": 0.0,
+      "has_shelter_access": true,
+      "shelter_baseline_min": 7.5,
+      "shelter_scenario_min": 7.5,
+      "shelter_delay_min": 0.0
+    },
+    "R5": {
+      "name": "Old Town Quarter",
+      "population": 12500,
+      "has_hospital_access": true,
+      "hospital_baseline_min": 4.0,
+      "hospital_scenario_min": 4.0,
+      "hospital_delay_min": 0.0,
+      "has_shelter_access": true,
+      "shelter_baseline_min": 14.0,
+      "shelter_scenario_min": 14.0,
+      "shelter_delay_min": 0.0
+    },
+    "R6": {
+      "name": "Lakeside Enclave",
+      "population": 8000,
+      "has_hospital_access": true,
+      "hospital_baseline_min": 11.0,
+      "hospital_scenario_min": 11.0,
+      "hospital_delay_min": 0.0,
+      "has_shelter_access": true,
+      "shelter_baseline_min": 16.0,
+      "shelter_scenario_min": 16.0,
+      "shelter_delay_min": 0.0
+    }
+  }
+}
