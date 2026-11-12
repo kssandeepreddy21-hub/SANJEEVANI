@@ -1,10 +1,10 @@
-# Virtual Environment
+# Python virtual environments
 .venv/
 venv/
 env/
 ENV/
 
-# Python Cache
+# Python cache and testing
 __pycache__/
 *.py[cod]
 *$py.class
@@ -13,20 +13,23 @@ __pycache__/
 .coverage
 htmlcov/
 
-# Operating System & IDE Artifacts
-.DS_Store
-Thumbs.db
-desktop.ini
+# IDE files
 .vscode/
 .idea/
 
-# Environment Variables & Secrets
+# Environment variables and secrets
 .env
-*.env
+.env.*
+!.env.example
 *.pem
 *.key
 
-# Runtime Evidence & Demonstration Artifacts
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Runtime evidence and demonstration artifacts
 data/images/*
 !data/images/.gitkeep
 data/reports/*

@@ -1,0 +1,21 @@
+road_id,name,road_type,failure_probability,flood_sensitivity,pop_no_hospital,pop_no_shelter,unique_pop_lost_service,pop_hospital_delay,risk_score
+RD04,Hilltop Access Road,local,0.1,0.1,9500,9500,9500,0,950.0
+RD10,Downtown Hospital Expressway,highway,0.15,0.15,0,0,0,42000,0.0
+RD13,Apex Hospital Spur,local,0.2,0.25,0,0,0,20500,0.0
+RD20,Industrial Link to Trauma Center,arterial,0.2,0.2,0,0,0,18000,0.0
+RD01,Riverside South Link,arterial,0.65,0.8,0,0,0,14000,0.0
+RD09,Downtown Spine Avenue,arterial,0.2,0.25,0,0,0,14000,0.0
+RD08,Central Station Link,local,0.1,0.2,0,0,0,14000,0.0
+RD06,Hospital North Link,arterial,0.15,0.2,0,0,0,9500,0.0
+RD05,North Stadium Way,arterial,0.12,0.15,0,0,0,9500,0.0
+RD19,South Bank Causeway Bridge,bridge,0.85,0.95,0,0,0,8000,0.0
+RD02,West Embankment Road,local,0.7,0.85,0,0,0,0,0.0
+RD15,East End Boulevard,arterial,0.25,0.3,0,0,0,0,0.0
+RD12,Old Town Riverway,arterial,0.55,0.7,0,0,0,0,0.0
+RD18,Lakeside Boulevard,arterial,0.6,0.75,0,0,0,0,0.0
+RD17,Civic Overpass,highway,0.2,0.25,0,0,0,0,0.0
+RD16,East Shelter Approach,local,0.18,0.2,0,0,0,0,0.0
+RD03,West Bypass Highway,highway,0.15,0.2,0,0,0,0,0.0
+RD07,North-Central Corridor,arterial,0.25,0.3,0,0,0,0,0.0
+RD11,Grand River Bridge,bridge,0.8,0.9,0,0,0,0,0.0
+RD14,East Crossway Bridge,bridge,0.75,0.85,0,0,0,0,0.0

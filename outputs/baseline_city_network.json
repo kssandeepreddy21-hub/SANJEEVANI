@@ -1,0 +1,450 @@
+{
+  "metadata": {
+    "dataset_name": "SANJEEVANI_Synthetic_City_Network",
+    "version": "1.0-prototype",
+    "is_synthetic": true,
+    "description": "Synthetic city network modeled with residential wards, critical hospitals, emergency shelters, response bases, roads, and flood-vulnerable bridges."
+  },
+  "nodes": [
+    {
+      "id": "R1",
+      "name": "Riverside Colony",
+      "type": "residential",
+      "population": 14000,
+      "flood_exposure": "high",
+      "pos": [
+        15,
+        40
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "R2",
+      "name": "Downtown Heights",
+      "type": "residential",
+      "population": 28000,
+      "flood_exposure": "medium",
+      "pos": [
+        45,
+        60
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "R3",
+      "name": "Hilltop Suburb",
+      "type": "residential",
+      "population": 9500,
+      "flood_exposure": "low",
+      "pos": [
+        20,
+        85
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "R4",
+      "name": "East End Ward",
+      "type": "residential",
+      "population": 18000,
+      "flood_exposure": "medium",
+      "pos": [
+        85,
+        45
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "R5",
+      "name": "Old Town Quarter",
+      "type": "residential",
+      "population": 12500,
+      "flood_exposure": "high",
+      "pos": [
+        60,
+        25
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "R6",
+      "name": "Lakeside Enclave",
+      "type": "residential",
+      "population": 8000,
+      "flood_exposure": "high",
+      "pos": [
+        30,
+        15
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "H1",
+      "name": "City General Hospital",
+      "type": "hospital",
+      "capacity": 450,
+      "pos": [
+        50,
+        75
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "H2",
+      "name": "Apex Trauma Center",
+      "type": "hospital",
+      "capacity": 250,
+      "pos": [
+        80,
+        20
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "S1",
+      "name": "North Community Stadium Shelter",
+      "type": "shelter",
+      "capacity": 3500,
+      "pos": [
+        35,
+        90
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "S2",
+      "name": "East High School Civic Camp",
+      "type": "shelter",
+      "capacity": 2000,
+      "pos": [
+        70,
+        70
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "E1",
+      "name": "Central Fire & EMS Hub",
+      "type": "emergency_station",
+      "capacity": 20,
+      "pos": [
+        40,
+        50
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "E2",
+      "name": "Westside Rescue Depot",
+      "type": "emergency_station",
+      "capacity": 15,
+      "pos": [
+        10,
+        60
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "J1",
+      "name": "Central Circle Junction",
+      "type": "junction",
+      "pos": [
+        35,
+        45
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "J2",
+      "name": "River Crossing Bridgehead",
+      "type": "junction",
+      "pos": [
+        55,
+        45
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "J3",
+      "name": "East Arterial Junction",
+      "type": "junction",
+      "pos": [
+        75,
+        55
+      ],
+      "is_synthetic": true
+    },
+    {
+      "id": "J4",
+      "name": "North Ridge Junction",
+      "type": "junction",
+      "pos": [
+        25,
+        75
+      ],
+      "is_synthetic": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "R1",
+      "destination": "J1",
+      "road_id": "RD01",
+      "name": "Riverside South Link",
+      "distance_km": 2.5,
+      "travel_time_min": 5.0,
+      "failure_probability": 0.65,
+      "flood_sensitivity": 0.8,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R1",
+      "destination": "E2",
+      "road_id": "RD02",
+      "name": "West Embankment Road",
+      "distance_km": 2.0,
+      "travel_time_min": 4.0,
+      "failure_probability": 0.7,
+      "flood_sensitivity": 0.85,
+      "road_type": "local",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R2",
+      "destination": "E1",
+      "road_id": "RD09",
+      "name": "Downtown Spine Avenue",
+      "distance_km": 1.5,
+      "travel_time_min": 3.0,
+      "failure_probability": 0.2,
+      "flood_sensitivity": 0.25,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R2",
+      "destination": "H1",
+      "road_id": "RD10",
+      "name": "Downtown Hospital Expressway",
+      "distance_km": 2.0,
+      "travel_time_min": 3.5,
+      "failure_probability": 0.15,
+      "flood_sensitivity": 0.15,
+      "road_type": "highway",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R3",
+      "destination": "J4",
+      "road_id": "RD04",
+      "name": "Hilltop Access Road",
+      "distance_km": 1.8,
+      "travel_time_min": 3.6,
+      "failure_probability": 0.1,
+      "flood_sensitivity": 0.1,
+      "road_type": "local",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R4",
+      "destination": "J3",
+      "road_id": "RD15",
+      "name": "East End Boulevard",
+      "distance_km": 2.0,
+      "travel_time_min": 4.0,
+      "failure_probability": 0.25,
+      "flood_sensitivity": 0.3,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R4",
+      "destination": "H2",
+      "road_id": "RD20",
+      "name": "Industrial Link to Trauma Center",
+      "distance_km": 2.5,
+      "travel_time_min": 5.0,
+      "failure_probability": 0.2,
+      "flood_sensitivity": 0.2,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R5",
+      "destination": "J2",
+      "road_id": "RD12",
+      "name": "Old Town Riverway",
+      "distance_km": 2.5,
+      "travel_time_min": 5.0,
+      "failure_probability": 0.55,
+      "flood_sensitivity": 0.7,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R5",
+      "destination": "H2",
+      "road_id": "RD13",
+      "name": "Apex Hospital Spur",
+      "distance_km": 2.0,
+      "travel_time_min": 4.0,
+      "failure_probability": 0.2,
+      "flood_sensitivity": 0.25,
+      "road_type": "local",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R5",
+      "destination": "R6",
+      "road_id": "RD19",
+      "name": "South Bank Causeway Bridge",
+      "distance_km": 3.5,
+      "travel_time_min": 7.0,
+      "failure_probability": 0.85,
+      "flood_sensitivity": 0.95,
+      "road_type": "bridge",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "R6",
+      "destination": "J1",
+      "road_id": "RD18",
+      "name": "Lakeside Boulevard",
+      "distance_km": 3.0,
+      "travel_time_min": 6.0,
+      "failure_probability": 0.6,
+      "flood_sensitivity": 0.75,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "H1",
+      "destination": "S1",
+      "road_id": "RD06",
+      "name": "Hospital North Link",
+      "distance_km": 2.8,
+      "travel_time_min": 5.0,
+      "failure_probability": 0.15,
+      "flood_sensitivity": 0.2,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "H1",
+      "destination": "S2",
+      "road_id": "RD17",
+      "name": "Civic Overpass",
+      "distance_km": 3.2,
+      "travel_time_min": 5.5,
+      "failure_probability": 0.2,
+      "flood_sensitivity": 0.25,
+      "road_type": "highway",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "S1",
+      "destination": "J4",
+      "road_id": "RD05",
+      "name": "North Stadium Way",
+      "distance_km": 2.2,
+      "travel_time_min": 4.0,
+      "failure_probability": 0.12,
+      "flood_sensitivity": 0.15,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "S2",
+      "destination": "J3",
+      "road_id": "RD16",
+      "name": "East Shelter Approach",
+      "distance_km": 1.8,
+      "travel_time_min": 3.5,
+      "failure_probability": 0.18,
+      "flood_sensitivity": 0.2,
+      "road_type": "local",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "E1",
+      "destination": "J1",
+      "road_id": "RD08",
+      "name": "Central Station Link",
+      "distance_km": 1.0,
+      "travel_time_min": 2.0,
+      "failure_probability": 0.1,
+      "flood_sensitivity": 0.2,
+      "road_type": "local",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "E2",
+      "destination": "J4",
+      "road_id": "RD03",
+      "name": "West Bypass Highway",
+      "distance_km": 3.0,
+      "travel_time_min": 4.5,
+      "failure_probability": 0.15,
+      "flood_sensitivity": 0.2,
+      "road_type": "highway",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "J1",
+      "destination": "J4",
+      "road_id": "RD07",
+      "name": "North-Central Corridor",
+      "distance_km": 3.5,
+      "travel_time_min": 6.0,
+      "failure_probability": 0.25,
+      "flood_sensitivity": 0.3,
+      "road_type": "arterial",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "J1",
+      "destination": "J2",
+      "road_id": "RD11",
+      "name": "Grand River Bridge",
+      "distance_km": 2.2,
+      "travel_time_min": 4.4,
+      "failure_probability": 0.8,
+      "flood_sensitivity": 0.9,
+      "road_type": "bridge",
+      "is_available": true,
+      "is_synthetic": true
+    },
+    {
+      "source": "J2",
+      "destination": "J3",
+      "road_id": "RD14",
+      "name": "East Crossway Bridge",
+      "distance_km": 2.8,
+      "travel_time_min": 5.5,
+      "failure_probability": 0.75,
+      "flood_sensitivity": 0.85,
+      "road_type": "bridge",
+      "is_available": true,
+      "is_synthetic": true
+    }
+  ]
+}
