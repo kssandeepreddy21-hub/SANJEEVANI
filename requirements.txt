@@ -3,3 +3,8 @@ pillow
 ImageHash
 pandas
 numpy
+streamlit
+plotly
+folium
+streamlit-folium
+networkx

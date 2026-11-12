@@ -1,0 +1,6 @@
+id,type,location,urgency,confidence,verified,dataset_tag
+INC-901,Flash Flood Entrapment,Sector 4 Lowlands,CRITICAL,0.94,True,SYNTHETIC_PROTOTYPE
+INC-902,Infrastructure Failure,Central Riverfront,CRITICAL,0.89,True,SYNTHETIC_PROTOTYPE
+INC-903,Medical Evacuation,South Valley,CRITICAL,0.91,True,SYNTHETIC_PROTOTYPE
+INC-904,Road Obstruction,West Connector,WARNING,0.78,True,SYNTHETIC_PROTOTYPE
+INC-905,Misinformation / Duplicate Check,East Basin,WARNING,0.28,False,SYNTHETIC_PROTOTYPE
